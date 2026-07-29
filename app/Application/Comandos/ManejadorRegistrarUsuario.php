@@ -34,8 +34,10 @@ final class ManejadorRegistrarUsuario
 
         $sal = bin2hex(random_bytes(32));
 
+        $preHash = hash('sha256', $sal . $comando->contrasena);
+
         $hash = password_hash(
-            $sal . $comando->contrasena,
+            $preHash,
             PASSWORD_BCRYPT,
             ['cost' => 12]
         );

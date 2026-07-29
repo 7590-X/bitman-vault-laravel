@@ -52,9 +52,11 @@ final class ManejadorIniciarSesion
             throw new RuntimeException('Esta cuenta está suspendida o ha sido eliminada.');
         }
 
-        // 3. Rehashear la contraseña entrante con la sal del usuario y comparar
+        // 3. Rehashear la contraseña entrante con la sal del usuario usando SHA-256 y comparar
+        $preHash = hash('sha256', $usuario->obtenerSalContrasena() . $comando->contrasena);
+
         $esValida = password_verify(
-            $usuario->obtenerSalContrasena() . $comando->contrasena,
+            $preHash,
             $usuario->obtenerHashContrasena(),
         );
 
