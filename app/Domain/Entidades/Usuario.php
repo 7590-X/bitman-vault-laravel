@@ -13,14 +13,28 @@ final class Usuario
 {
     /**
      * Crea una nueva instancia de la entidad Usuario.
+     *
+     * @param int|null     $id                 Nulo al crear; asignado por la BD al persistir.
+     * @param string       $nombreCompleto     Nombre completo del titular.
+     * @param string       $correoElectronico  Correo único de acceso.
+     * @param string       $hashContrasena     Hash de la contraseña maestra.
+     * @param string       $salContrasena      Sal criptográfica usada en el hash.
+     * @param EstadoUsuario $estado            Estado actual de la cuenta.
      */
     public function __construct(
-        private readonly string $nombreCompleto,
-        private readonly string $correoElectronico,
-        private readonly string $hashContrasena,
-        private readonly string $salContrasena,
+        private readonly ?int          $id,
+        private readonly string        $nombreCompleto,
+        private readonly string        $correoElectronico,
+        private readonly string        $hashContrasena,
+        private readonly string        $salContrasena,
         private readonly EstadoUsuario $estado = EstadoUsuario::Activo,
     ) {}
+
+    /** Retorna el ID del usuario (null antes de persistir). */
+    public function obtenerId(): ?int
+    {
+        return $this->id;
+    }
 
     /** Retorna el nombre completo del usuario. */
     public function obtenerNombreCompleto(): string

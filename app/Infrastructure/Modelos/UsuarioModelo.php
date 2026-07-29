@@ -2,15 +2,17 @@
 
 /**
  * Modelo Eloquent que representa la tabla `secretos.usuarios`.
- * Implementa las convenciones de timestamps y constantes del sistema.
+ * Extiende Authenticatable para integrarse con el guard JWT de Laravel.
+ * Implementa JWTSubject para la emisión y verificación de tokens.
  */
 
 namespace App\Infrastructure\Modelos;
 
 use App\Domain\Enums\EstadoUsuario;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 
-class UsuarioModelo extends Model
+class UsuarioModelo extends Authenticatable implements JWTSubject
 {
     /** Tabla asociada al modelo en el esquema secretos. */
     protected $table = 'secretos.usuarios';
@@ -30,7 +32,7 @@ class UsuarioModelo extends Model
         'estado',
     ];
 
-    /** Campos ocultos en la serialización. */
+    /** Campos ocultos en la serialización JSON. */
     protected $hidden = [
         'hash_contrasena',
         'sal_contrasena',
@@ -42,9 +44,34 @@ class UsuarioModelo extends Model
     protected function casts(): array
     {
         return [
-            'estado'      => EstadoUsuario::class,
-            'creado_en'   => 'datetime',
+            'estado'         => EstadoUsuario::class,
+            'creado_en'      => 'datetime',
             'actualizado_en' => 'datetime',
         ];
     }
+
+    // -------------------------------------------------------------------------
+    // JWTSubject — requerido por php-open-source-saver/jwt-auth
+    // -------------------------------------------------------------------------
+
+    /**
+     * Retorna el identificador que se almacenará como "sub" en el payload JWT.
+     * Usamos el ID primario (BIGINT) del usuario.
+     */
+    public function getJWTIdentifier(): mixed
+    {
+        return $this->getKey();
+    }
+
+    /**
+     * Retorna claims personalizados adicionales para el payload del token.
+     * Incluimos el correo para que el cliente pueda leerlo sin llamar a /me.
+     */
+    public function getJWTCustomClaims(): array
+    {
+        return [
+            'correo' => $this->correo_electronico,
+        ];
+    }
 }
+

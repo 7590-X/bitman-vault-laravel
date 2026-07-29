@@ -15,7 +15,7 @@ Route::get('/', function () {
 Route::get('/registro', [ControladorRegistro::class, 'mostrar'])->name('registro');
 Route::post('/registro', [ControladorRegistro::class, 'registrar'])->name('registro.guardar');
 
-// Ruta temporal de login — pendiente de implementar en HU-02
+// Ruta de inicio de sesión
 Route::get('/login', function () {
-    return view('welcome');
+    return view('auth.login');
 })->name('login');

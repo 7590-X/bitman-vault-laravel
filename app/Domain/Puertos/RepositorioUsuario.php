@@ -20,4 +20,10 @@ interface RepositorioUsuario
      * Verifica si un correo electrónico ya existe en el sistema.
      */
     public function existeCorreo(string $correo): bool;
+
+    /**
+     * Busca un usuario por su correo electrónico.
+     * Retorna null si no existe ningún usuario con ese correo.
+     */
+    public function buscarPorCorreo(string $correo): ?Usuario;
 }

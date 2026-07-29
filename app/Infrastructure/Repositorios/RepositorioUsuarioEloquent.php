@@ -8,6 +8,7 @@
 namespace App\Infrastructure\Repositorios;
 
 use App\Domain\Entidades\Usuario;
+use App\Domain\Enums\EstadoUsuario;
 use App\Domain\Puertos\RepositorioUsuario;
 use App\Infrastructure\Modelos\UsuarioModelo;
 
@@ -34,4 +35,30 @@ final class RepositorioUsuarioEloquent implements RepositorioUsuario
     {
         return UsuarioModelo::where('correo_electronico', $correo)->exists();
     }
+
+    /**
+     * Busca un usuario por correo electrónico y lo mapea a la entidad de dominio.
+     * Retorna null si no se encuentra ningún registro con ese correo.
+     */
+    public function buscarPorCorreo(string $correo): ?Usuario
+    {
+        /** @var UsuarioModelo|null $modelo */
+        $modelo = UsuarioModelo::where('correo_electronico', $correo)->first();
+
+        if ($modelo === null) {
+            return null;
+        }
+
+        return new Usuario(
+            id:                 $modelo->id,
+            nombreCompleto:     $modelo->nombre_completo,
+            correoElectronico:  $modelo->correo_electronico,
+            hashContrasena:     $modelo->hash_contrasena,
+            salContrasena:      $modelo->sal_contrasena,
+            estado:             $modelo->estado instanceof EstadoUsuario
+                                    ? $modelo->estado
+                                    : EstadoUsuario::from($modelo->estado),
+        );
+    }
 }
+

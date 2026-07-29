@@ -41,11 +41,12 @@ final class ManejadorRegistrarUsuario
         );
 
         $usuario = new Usuario(
-            nombreCompleto: $comando->nombreCompleto,
+            id:                null,
+            nombreCompleto:    $comando->nombreCompleto,
             correoElectronico: $comando->correoElectronico,
-            hashContrasena: $hash,
-            salContrasena: $sal,
-            estado: EstadoUsuario::Activo,
+            hashContrasena:    $hash,
+            salContrasena:     $sal,
+            estado:            EstadoUsuario::Activo,
         );
 
         $this->repositorioUsuario->guardar($usuario);

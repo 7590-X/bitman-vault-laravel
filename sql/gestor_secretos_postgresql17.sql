@@ -39,7 +39,7 @@ COMMENT ON SCHEMA secretos IS 'Esquema principal del sistema gestor de secretos 
 SET search_path TO secretos, public;
 
 -- Extensión para correos electrónicos case-insensitive sin duplicados
-CREATE EXTENSION IF NOT EXISTS citext;
+CREATE EXTENSION IF NOT EXISTS citext WITH SCHEMA secretos;
 -- gen_random_uuid() es nativo desde PostgreSQL 13 (no requiere pgcrypto)
 
 -- ============================
@@ -74,7 +74,6 @@ COMMENT ON FUNCTION secretos.fn_actualizar_timestamp() IS 'Actualiza automática
 -- ============================
 -- 3. TABLA: usuarios
 -- ============================
-DROP TABLE secretos.usuarios CASCADE;
 CREATE TABLE secretos.usuarios (
   id                  BIGINT GENERATED ALWAYS AS IDENTITY,
   nombre_completo     VARCHAR(150)      NOT NULL,

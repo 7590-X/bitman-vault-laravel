@@ -7,7 +7,9 @@
 
 namespace App\Application\Providers;
 
+use App\Domain\Puertos\AutenticacionRepositorio;
 use App\Domain\Puertos\RepositorioUsuario;
+use App\Infrastructure\Auth\AutenticacionRepositorioJwt;
 use App\Infrastructure\Repositorios\RepositorioUsuarioEloquent;
 use Illuminate\Support\ServiceProvider;
 
@@ -21,6 +23,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             RepositorioUsuario::class,
             RepositorioUsuarioEloquent::class
+        );
+
+        $this->app->bind(
+            AutenticacionRepositorio::class,
+            AutenticacionRepositorioJwt::class
         );
     }
 
