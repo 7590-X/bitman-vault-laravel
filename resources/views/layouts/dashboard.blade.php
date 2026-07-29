@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Panel de control de Bitman — Tu bóveda de secretos segura y personal.">
     <title>@yield('titulo', 'Bitman Dashboard')</title>
-    
+
     @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     @endif
 
     {{-- Alpine.js para la interactividad del menú --}}
@@ -24,6 +25,7 @@
         })();
     </script>
 </head>
+
 <body class="bg-slate-50 text-slate-900 min-h-screen antialiased overflow-hidden flex h-screen w-screen">
 
     {{-- Área del Sidebar (Izquierda) --}}
@@ -36,21 +38,20 @@
         {{-- Topbar (Opcional, barra superior) --}}
         <header class="h-14 bg-white border-b border-slate-200 flex items-center justify-between px-6 shrink-0">
             <h2 id="topbar-title" class="text-lg font-semibold text-slate-800">Cargando...</h2>
-            
+
             {{-- Menú de usuario / Logout --}}
             <div class="flex items-center gap-4">
                 <span id="user-email-display" class="text-sm font-medium text-slate-600">...</span>
-                <button 
-                    onclick="logout()" 
-                    class="text-sm text-slate-500 hover:text-red-600 font-medium transition-colors duration-200"
-                >
+                <button
+                    onclick="logout()"
+                    class="text-sm text-slate-500 hover:text-red-600 font-medium transition-colors duration-200">
                     Cerrar sesión
                 </button>
             </div>
         </header>
 
         {{-- Contenedor SPA Dinámico --}}
-        <main id="app-content" class="flex-1 overflow-y-auto p-6 md:p-8">
+        <main id="app-content" class="flex-1 overflow-y-auto">
             @yield('contenido')
         </main>
     </div>
@@ -63,9 +64,11 @@
 
             try {
                 const response = await fetch('/api/auth/me', {
-                    headers: { 'Authorization': `Bearer ${token}` }
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
                 });
-                
+
                 if (response.ok) {
                     const data = await response.json();
                     document.getElementById('user-email-display').textContent = data.correo_electronico;
@@ -85,9 +88,11 @@
                 try {
                     await fetch('/api/auth/logout', {
                         method: 'POST',
-                        headers: { 'Authorization': `Bearer ${token}` }
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
                     });
-                } catch(e) {}
+                } catch (e) {}
             }
             localStorage.removeItem('jwt_token');
             window.location.href = '/login';
@@ -96,4 +101,5 @@
         document.addEventListener('DOMContentLoaded', loadUserInfo);
     </script>
 </body>
+
 </html>
