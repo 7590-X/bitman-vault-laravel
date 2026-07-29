@@ -15,7 +15,7 @@
     {{-- Cabecera del grupo (botón de expansión) --}}
     <button 
         @click="open = !open" 
-        class="w-full flex items-center justify-between px-3 py-2.5 text-sm font-semibold text-[#a5a9b0] hover:text-white hover:bg-[#2d333b] transition-colors focus:outline-none"
+        class="w-full flex items-center justify-between px-3 py-2.5 text-sm font-semibold text-slate-400 hover:text-slate-100 hover:bg-slate-800/50 transition-colors duration-200 focus:outline-none rounded-md mx-2 my-0.5"
     >
         <div class="flex items-center gap-2.5">
             @if($icono)

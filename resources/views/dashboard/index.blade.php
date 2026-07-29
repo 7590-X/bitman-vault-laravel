@@ -16,14 +16,14 @@
         <x-sidebar.item href="#/mfa" titulo="Códigos MFA (2FA)" icono="🔐" />
     </x-sidebar.grupo>
 
-    <div class="my-2 border-t border-[#2d333b]"></div>
+    <div class="my-2 border-t border-slate-800"></div>
 
     {{-- GRUPO: Archivos --}}
     <x-sidebar.grupo titulo="Files" :abierto="false" icono="📁">
         <x-sidebar.item href="#/archivos-encriptados" titulo="Archivos encriptados" icono="📄" />
     </x-sidebar.grupo>
 
-    <div class="my-2 border-t border-[#2d333b]"></div>
+    <div class="my-2 border-t border-slate-800"></div>
 
     {{-- GRUPO: Compartir (Send) --}}
     <x-sidebar.grupo titulo="Share & Send" :abierto="false" icono="✉️">
@@ -32,7 +32,7 @@
         <x-sidebar.item href="#/control-compartidos" titulo="Control de Accesos" icono="⚙️" />
     </x-sidebar.grupo>
 
-    <div class="my-2 border-t border-[#2d333b]"></div>
+    <div class="my-2 border-t border-slate-800"></div>
 
     {{-- GRUPO: Seguridad Avanzada --}}
     <x-sidebar.grupo titulo="Seguridad Avanzada" :abierto="false" icono="🛡️">
@@ -43,15 +43,20 @@
 @endsection
 
 @section('contenido')
-{{-- Este contenido será reemplazado dinámicamente por el JS en el futuro --}}
-<div id="dynamic-view" class="h-full flex flex-col items-center justify-center text-center">
-    <div class="bg-white p-8 rounded-xl shadow-sm border border-slate-200 max-w-lg w-full">
-        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-50 text-blue-500 mb-4 text-2xl">
-            🏗️
+<div id="dynamic-view" class="h-full flex flex-col items-center justify-center text-center p-6">
+    <div class="bg-white p-10 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 border border-slate-200 max-w-lg w-full relative overflow-hidden group">
+        {{-- Decoración superior premium --}}
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-600 to-blue-400 opacity-80 group-hover:opacity-100 transition-opacity"></div>
+        
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-50 text-blue-600 mb-6 text-2xl shadow-inner border border-blue-100">
+            🛡️
         </div>
-        <h3 id="view-title" class="text-xl font-bold text-slate-800 mb-2">Bienvenido a Bitman Vault</h3>
-        <p class="text-slate-500 mb-6">Selecciona una opción del menú lateral para comenzar a gestionar tus secretos.</p>
-        <p class="text-xs text-slate-400 font-mono" id="view-path">Ruta actual: /</p>
+        <h3 id="view-title" class="text-2xl font-semibold text-slate-900 mb-3 tracking-tight">Bienvenido a Bitman Vault</h3>
+        <p class="text-slate-600 mb-8 leading-relaxed">Selecciona una opción del menú lateral para comenzar a gestionar tus secretos y credenciales de manera segura.</p>
+        
+        <div class="inline-flex items-center px-3 py-1.5 rounded-md bg-slate-50 border border-slate-200">
+            <p class="text-xs text-slate-500 font-mono" id="view-path">Ruta actual: /</p>
+        </div>
     </div>
 </div>
 

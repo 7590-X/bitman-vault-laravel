@@ -27,12 +27,12 @@
 <body class="bg-slate-50 text-slate-900 min-h-screen antialiased overflow-hidden flex h-screen w-screen">
 
     {{-- Área del Sidebar (Izquierda) --}}
-    <aside class="w-64 bg-[#1e2329] text-[#e0e2e6] flex flex-col h-full shadow-lg z-10 shrink-0 border-r border-[#2d333b] overflow-y-auto overflow-x-hidden">
+    <aside class="w-64 bg-slate-900 text-slate-300 flex flex-col h-full shadow-lg z-10 shrink-0 border-r border-slate-800 overflow-y-auto overflow-x-hidden">
         @yield('sidebar')
     </aside>
 
     {{-- Área Principal (Derecha) --}}
-    <div class="flex-1 flex flex-col h-full bg-[#f8fafc]">
+    <div class="flex-1 flex flex-col h-full bg-slate-50">
         {{-- Topbar (Opcional, barra superior) --}}
         <header class="h-14 bg-white border-b border-slate-200 flex items-center justify-between px-6 shrink-0">
             <h2 id="topbar-title" class="text-lg font-semibold text-slate-800">Cargando...</h2>
@@ -42,7 +42,7 @@
                 <span id="user-email-display" class="text-sm font-medium text-slate-600">...</span>
                 <button 
                     onclick="logout()" 
-                    class="text-sm text-slate-500 hover:text-red-600 font-medium transition-colors"
+                    class="text-sm text-slate-500 hover:text-red-600 font-medium transition-colors duration-200"
                 >
                     Cerrar sesión
                 </button>

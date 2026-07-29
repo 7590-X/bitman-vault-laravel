@@ -11,6 +11,8 @@
 
 # Estándares de Paleta de Colores
 
+**Role:** Expert UI/UX Designer & Senior Frontend Developer
+
 Este proyecto utiliza el sistema de colores de Tailwind CSS. Hemos estandarizado las siguientes paletas para mantener la consistencia en toda la interfaz de usuario.
 
 ## Color Principal (Azul)
@@ -96,3 +98,28 @@ El texto normal debe usar colores neutrales ligeramente más suaves para no fati
 | **Secundario** | `text-sm` | `font-normal` | Fechas de creación, subtítulos descriptivos, placeholders de inputs, notas aclaratorias. |
 | **Micro Texto** | `text-xs` | `font-medium` | Textos legales muy pequeños, etiquetas (badges), validaciones de error bajo un input. |
 | **Botones / Enlaces** | `text-sm` o `text-base` | `font-medium` | Acciones de usuario. Siempre deben llevar `font-medium` para destacar sobre el texto normal. |
+
+---
+
+## Estructura y Componentes (Layout & UI Elements)
+
+### Paneles y Layouts
+Para transmitir seguridad, usamos un esquema de "Side navigation" oscuro y un área de contenido claro (para facilitar la lectura de los datos).
+*   **Sidebar (Menú Lateral):** `bg-slate-900` para el fondo.
+*   **Bordes Divisorios (Sidebar):** `border-slate-800` para separar sutilmente el sidebar del contenido.
+*   **Texto (Sidebar):** `text-slate-400` (inactivo), `text-slate-100` (hover), `text-blue-400` (activo).
+*   **Fondo Hover (Sidebar):** `bg-slate-800/50` para un efecto sutil.
+*   **Área de Contenido:** `bg-slate-50` (neutral-claro) para el área principal.
+*   **Topbar:** `bg-white border-slate-200` para la barra superior, con `text-slate-800`.
+
+### Tarjetas (Cards) y Contenedores
+Las tarjetas donde se muestra la información sensible deben sentirse sólidas y definidas.
+*   **Fondo:** `bg-white`
+*   **Borde:** `border border-slate-200`
+*   **Sombra:** `shadow-sm` para todas las tarjetas base, `shadow-md` para elementos flotantes o destacados (hover).
+*   **Border Radius:** `rounded-xl` para contenedores principales, `rounded-lg` para componentes internos.
+
+### Animaciones y Transiciones (Micro-interacciones)
+Todas las interacciones deben sentirse fluidas y profesionales.
+*   Utilizar siempre `transition-all duration-200` o `transition-colors duration-200` en botones y enlaces.
+*   Para elementos interactivos (hovers, botones), asegurar un cambio sutil y ágil.
