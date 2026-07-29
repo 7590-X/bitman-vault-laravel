@@ -29,6 +29,11 @@ class AppServiceProvider extends ServiceProvider
             AutenticacionRepositorio::class,
             AutenticacionRepositorioJwt::class
         );
+
+        $this->app->bind(
+            \App\Domain\Puertos\RepositorioLogin::class,
+            \App\Infrastructure\Repositorios\RepositorioLoginEloquent::class
+        );
     }
 
     /**

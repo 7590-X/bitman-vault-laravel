@@ -10,6 +10,7 @@
  */
 
 use App\Presentation\Http\Controllers\ControladorAutenticacion;
+use App\Presentation\Http\Controllers\ControladorLogin;
 use Illuminate\Support\Facades\Route;
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -23,11 +24,15 @@ Route::prefix('auth')->group(function () {
 // ─────────────────────────────────────────────────────────────────────────────
 // Rutas protegidas — requieren token JWT válido
 // ─────────────────────────────────────────────────────────────────────────────
-Route::prefix('auth')->middleware('jwt.auth')->group(function () {
-    Route::post('logout',  [ControladorAutenticacion::class, 'logout'])
-        ->name('api.auth.logout');
-    Route::post('refresh', [ControladorAutenticacion::class, 'refresh'])
-        ->name('api.auth.refresh');
-    Route::get('me',       [ControladorAutenticacion::class, 'me'])
-        ->name('api.auth.me');
+Route::middleware('jwt.auth')->group(function () {
+    Route::prefix('auth')->group(function () {
+        Route::post('logout',  [ControladorAutenticacion::class, 'logout'])
+            ->name('api.auth.logout');
+        Route::post('refresh', [ControladorAutenticacion::class, 'refresh'])
+            ->name('api.auth.refresh');
+        Route::get('me',       [ControladorAutenticacion::class, 'me'])
+            ->name('api.auth.me');
+    });
+
+    Route::apiResource('logins', ControladorLogin::class)->except(['show']);
 });
