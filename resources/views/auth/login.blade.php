@@ -8,17 +8,14 @@
 @section('descripcion', 'Accede a tu bóveda de secretos de Bitman de forma segura.')
 
 @section('contenido')
-<main class="flex min-h-screen items-center justify-center px-4 py-12 bg-slate-50">
+<main class="flex min-h-screen items-center justify-center px-4 py-12 bg-slate-900">
 
     <div class="w-full max-w-md">
 
         {{-- Cabecera / Marca --}}
-        <div class="mb-8 text-center">
-            <div class="mb-4 inline-flex h-14 w-14 items-center justify-center rounded-xl bg-blue-500 shadow-md">
-                <span class="text-2xl" aria-hidden="true">🔐</span>
-            </div>
-            <h1 class="text-3xl font-bold text-slate-900">BITMAN</h1>
-            <p class="mt-1 text-sm font-normal text-slate-500">Tu bóveda de secretos personal</p>
+        <div class="mb-8 flex flex-col items-center">
+            <x-logo size="lg" justify="center" />
+            <p class="mt-3 text-sm font-normal text-slate-400">Tu bóveda de secretos personal</p>
         </div>
 
         {{-- Tarjeta del formulario --}}
@@ -80,10 +77,10 @@
         </div>
 
         {{-- Enlace a registro --}}
-        <p class="mt-6 text-center text-sm font-normal text-slate-500">
+        <p class="mt-6 text-center text-sm font-normal text-slate-400">
             ¿No tienes cuenta?
             <a href="{{ route('registro') }}"
-               class="font-medium text-blue-700 hover:underline underline-offset-4">
+               class="font-medium text-blue-400 hover:text-blue-300 hover:underline underline-offset-4 transition-colors">
                 Crea una aquí
             </a>
         </p>
