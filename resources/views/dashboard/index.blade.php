@@ -9,36 +9,36 @@
         <x-logo size="md" justify="start" />
     </div>
     {{-- GRUPO: Bóveda Principal --}}
-    <x-sidebar.grupo titulo="All items" :abierto="true" icono="🗃️">
-        <x-sidebar.item href="#/logins" titulo="Logins" icono="🌐" />
-        <x-sidebar.item href="#/tarjetas-credito" titulo="Tarjetas de crédito" icono="💳" />
-        <x-sidebar.item href="#/tarjetas-debito" titulo="Tarjetas de débito" icono="💳" />
-        <x-sidebar.item href="#/notas-seguras" titulo="Notas seguras" icono="📝" />
-        <x-sidebar.item href="#/ssh-keys" titulo="SSH keys" icono="🔑" />
-        <x-sidebar.item href="#/mfa" titulo="Códigos MFA (2FA)" icono="🔐" />
+    <x-sidebar.grupo titulo="All items" :abierto="true" icono="vault">
+        <x-sidebar.item href="#/logins" titulo="Logins" icono="globe" />
+        <x-sidebar.item href="#/tarjetas-credito" titulo="Tarjetas de crédito" icono="credit-card" />
+        <x-sidebar.item href="#/tarjetas-debito" titulo="Tarjetas de débito" icono="card" />
+        <x-sidebar.item href="#/notas-seguras" titulo="Notas seguras" icono="document" />
+        <x-sidebar.item href="#/ssh-keys" titulo="SSH keys" icono="key" />
+        <x-sidebar.item href="#/mfa" titulo="Códigos MFA (2FA)" icono="shield-check" />
     </x-sidebar.grupo>
 
     <div class="my-2 border-t border-slate-800"></div>
 
     {{-- GRUPO: Archivos --}}
-    <x-sidebar.grupo titulo="Files" :abierto="false" icono="📁">
-        <x-sidebar.item href="#/archivos-encriptados" titulo="Archivos encriptados" icono="📄" />
+    <x-sidebar.grupo titulo="Files" :abierto="false" icono="folder">
+        <x-sidebar.item href="#/archivos-encriptados" titulo="Archivos encriptados" icono="file-lock" />
     </x-sidebar.grupo>
 
     <div class="my-2 border-t border-slate-800"></div>
 
     {{-- GRUPO: Compartir (Send) --}}
-    <x-sidebar.grupo titulo="Share & Send" :abierto="false" icono="✉️">
-        <x-sidebar.item href="#/enviar-notas" titulo="Enviar Notas Seguras" icono="📤" />
-        <x-sidebar.item href="#/enviar-archivos" titulo="Enviar Archivos" icono="📦" />
-        <x-sidebar.item href="#/control-compartidos" titulo="Control de Accesos" icono="⚙️" />
+    <x-sidebar.grupo titulo="Share & Send" :abierto="false" icono="share">
+        <x-sidebar.item href="#/enviar-notas" titulo="Enviar Notas Seguras" icono="send-note" />
+        <x-sidebar.item href="#/enviar-archivos" titulo="Enviar Archivos" icono="package" />
+        <x-sidebar.item href="#/control-compartidos" titulo="Control de Accesos" icono="sliders" />
     </x-sidebar.grupo>
 
     <div class="my-2 border-t border-slate-800"></div>
 
     {{-- GRUPO: Seguridad Avanzada --}}
-    <x-sidebar.grupo titulo="Seguridad Avanzada" :abierto="false" icono="🛡️">
-        <x-sidebar.item href="#/dead-man-switch" titulo="Interruptor de Emergencia" icono="☠️" />
+    <x-sidebar.grupo titulo="Seguridad Avanzada" :abierto="false" icono="shield">
+        <x-sidebar.item href="#/dead-man-switch" titulo="Interruptor de Emergencia" icono="power" />
     </x-sidebar.grupo>
 
 </div>
