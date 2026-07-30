@@ -26,7 +26,7 @@
 ])
 
 <div {{ $attributes->merge([
-    'class' => 'shrink-0 mb-3 border-b border-slate-700/80 bg-slate-950 flex items-center gap-4'
+    'class' => 'p-4 shrink-0 border-b border-slate-700/80 bg-slate-950 flex items-center gap-4'
 ]) }}>
 
     {{-- Ícono (slot opcional) --}}

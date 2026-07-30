@@ -3,7 +3,7 @@
     Accede al estado del componente padre (loginSeleccionado) a través del scope de Alpine.js.
     Reutilizable en cualquier vista que tenga disponible la variable `loginSeleccionado` en su contexto Alpine.
 --}}
-<div class="h-full flex flex-col min-h-0 overflow-hidden">
+<div class="h-full max-w-xl flex flex-col min-h-0 overflow-hidden">
 
     {{-- ─── Encabezado del Detalle ──────────────────────────────────────── --}}
     <x-share.panel-header>
@@ -52,5 +52,21 @@
             </x-share.campo-detalle>
         </template>
 
+    </div>
+
+    {{-- ─── Pie fijo con acciones ──────────────────────────────────────────── --}}
+    <div class="shrink-0 py-4 px-8 border-t border-slate-700/80 bg-slate-950 flex items-center justify-end gap-3">
+        <x-share.button
+            variante="danger"
+            tipo="button"
+            @click="eliminarLogin()">
+            Eliminar
+        </x-share.button>
+        <x-share.button
+            variante="primary"
+            tipo="button"
+            @click="iniciarEdicion()">
+            Actualizar
+        </x-share.button>
     </div>
 </div>

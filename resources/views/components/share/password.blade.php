@@ -44,7 +44,7 @@ $key = $errorKey ?? $nombre;
         <button
             type="button"
             @click="mostrarPassword = !mostrarPassword"
-            class="absolute mt-1 inset-y-0 right-0 px-3.5 flex items-center gap-1 text-xs font-semibold text-slate-400 hover:text-slate-100 border-none hover:bg-slate-800/60 transition-colors select-none">
+            class="absolute rounded-xl inset-y-0 right-0 px-3.5 flex items-center gap-1 text-xs font-semibold text-slate-400 hover:text-slate-100  hover:bg-slate-800/60 transition-colors select-none">
             <x-icon.eye-off x-show="mostrarPassword" class="w-3.5 h-3.5 shrink-0" />
             <x-icon.eye x-show="!mostrarPassword" class="w-3.5 h-3.5 shrink-0" />
             <span x-text="mostrarPassword ? 'Ocultar' : 'Mostrar'"></span>

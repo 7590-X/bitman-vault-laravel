@@ -29,16 +29,16 @@
 
             {{-- Alerta de éxito (redirigida desde otra pantalla) --}}
             @if (session('exito'))
-                <div class="mb-5">
-                    <x-alerta tipo="exito" :mensaje="session('exito')" />
-                </div>
+            <div class="mb-5">
+                <x-share.alerta tipo="exito" :mensaje="session('exito')" />
+            </div>
             @endif
 
             {{-- Alerta de error general --}}
             @if ($errors->any() && !$errors->has('correo_electronico') && !$errors->has('nombre_completo') && !$errors->has('contrasena'))
-                <div class="mb-5">
-                    <x-alerta tipo="error" mensaje="Por favor, corrige los errores del formulario." />
-                </div>
+            <div class="mb-5">
+                <x-share.alerta tipo="error" mensaje="Por favor, corrige los errores del formulario." />
+            </div>
             @endif
 
             {{-- Formulario --}}
@@ -47,42 +47,38 @@
                 method="POST"
                 action="{{ route('registro.guardar') }}"
                 novalidate
-                class="flex flex-col gap-5"
-            >
+                class="flex flex-col gap-5">
                 @csrf
 
                 {{-- Nombre completo --}}
-                <x-campo-formulario
+                <x-auth.campo-formulario
                     nombre="nombre_completo"
                     etiqueta="Nombre completo"
                     tipo="text"
                     placeholder="Ej. María García López"
                     :requerido="true"
                     maxlength="150"
-                    autocomplete="name"
-                />
+                    autocomplete="name" />
 
                 {{-- Correo electrónico --}}
-                <x-campo-formulario
+                <x-auth.campo-formulario
                     nombre="correo_electronico"
                     etiqueta="Correo electrónico"
                     tipo="email"
                     placeholder="tu@correo.com"
                     :requerido="true"
-                    autocomplete="email"
-                />
+                    autocomplete="email" />
 
                 {{-- Contraseña maestra --}}
                 <div class="flex flex-col gap-1">
-                    <x-campo-formulario
+                    <x-auth.campo-formulario
                         nombre="contrasena"
                         etiqueta="Contraseña maestra"
                         tipo="password"
                         placeholder="Mín. 12 caracteres"
                         :requerido="true"
-                        autocomplete="new-password"
-                    />
-                    <x-indicador-fortaleza campo-objetivo="contrasena" />
+                        autocomplete="new-password" />
+                    <x-auth.indicador-fortaleza campo-objetivo="contrasena" />
                     <p class="text-xs font-normal text-slate-500">
                         Debe tener al menos 12 caracteres, una mayúscula, un número y un símbolo.
                     </p>
@@ -90,14 +86,13 @@
 
                 {{-- Confirmar contraseña --}}
                 <div class="flex flex-col gap-1">
-                    <x-campo-formulario
+                    <x-auth.campo-formulario
                         nombre="contrasena_confirmation"
                         etiqueta="Confirmar contraseña maestra"
                         tipo="password"
                         placeholder="Repite tu contraseña"
                         :requerido="true"
-                        autocomplete="new-password"
-                    />
+                        autocomplete="new-password" />
                     <p id="mensaje-coincidencia" class="text-xs font-medium hidden"></p>
                 </div>
 
@@ -110,8 +105,7 @@
                            hover:bg-blue-700
                            focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
                            disabled:opacity-60 disabled:cursor-not-allowed
-                           transition-colors duration-150"
-                >
+                           transition-colors duration-150">
                     Crear mi cuenta
                 </button>
 
@@ -122,7 +116,7 @@
         <p class="mt-6 text-center text-sm font-normal text-slate-400">
             ¿Ya tienes cuenta?
             <a href="{{ route('login') }}"
-               class="font-medium text-blue-400 hover:text-blue-300 hover:underline underline-offset-4 transition-colors">
+                class="font-medium text-blue-400 hover:text-blue-300 hover:underline underline-offset-4 transition-colors">
                 Inicia sesión
             </a>
         </p>
@@ -132,39 +126,39 @@
 
 {{-- Validación en tiempo real: coincidencia de contraseñas --}}
 <script>
-(function () {
-    document.addEventListener('DOMContentLoaded', function () {
-        const contrasena     = document.getElementById('contrasena');
-        const confirmacion   = document.getElementById('contrasena_confirmation');
-        const mensaje        = document.getElementById('mensaje-coincidencia');
-        const boton          = document.getElementById('boton-registro');
+    (function() {
+        document.addEventListener('DOMContentLoaded', function() {
+            const contrasena = document.getElementById('contrasena');
+            const confirmacion = document.getElementById('contrasena_confirmation');
+            const mensaje = document.getElementById('mensaje-coincidencia');
+            const boton = document.getElementById('boton-registro');
 
-        if (!contrasena || !confirmacion || !mensaje || !boton) return;
+            if (!contrasena || !confirmacion || !mensaje || !boton) return;
 
-        function verificarCoincidencia() {
-            if (confirmacion.value.length === 0) {
-                mensaje.classList.add('hidden');
-                return;
+            function verificarCoincidencia() {
+                if (confirmacion.value.length === 0) {
+                    mensaje.classList.add('hidden');
+                    return;
+                }
+
+                const coinciden = contrasena.value === confirmacion.value;
+
+                mensaje.classList.remove('hidden', 'text-emerald-700', 'text-red-700');
+
+                if (coinciden) {
+                    mensaje.textContent = '✓ Las contraseñas coinciden.';
+                    mensaje.classList.add('text-emerald-700');
+                    confirmacion.classList.remove('border-red-500', 'bg-red-50');
+                } else {
+                    mensaje.textContent = '✕ Las contraseñas no coinciden.';
+                    mensaje.classList.add('text-red-700');
+                    confirmacion.classList.add('border-red-500', 'bg-red-50');
+                }
             }
 
-            const coinciden = contrasena.value === confirmacion.value;
-
-            mensaje.classList.remove('hidden', 'text-emerald-700', 'text-red-700');
-
-            if (coinciden) {
-                mensaje.textContent = '✓ Las contraseñas coinciden.';
-                mensaje.classList.add('text-emerald-700');
-                confirmacion.classList.remove('border-red-500', 'bg-red-50');
-            } else {
-                mensaje.textContent = '✕ Las contraseñas no coinciden.';
-                mensaje.classList.add('text-red-700');
-                confirmacion.classList.add('border-red-500', 'bg-red-50');
-            }
-        }
-
-        contrasena.addEventListener('input', verificarCoincidencia);
-        confirmacion.addEventListener('input', verificarCoincidencia);
-    });
-}());
+            contrasena.addEventListener('input', verificarCoincidencia);
+            confirmacion.addEventListener('input', verificarCoincidencia);
+        });
+    }());
 </script>
 @endsection

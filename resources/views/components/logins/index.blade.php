@@ -8,6 +8,7 @@
         error: null,
         loginSeleccionado: null,
         creando: false,
+        editando: false,
         mensajeExito: null,
 
         async init() {
@@ -16,14 +17,24 @@
 
         iniciarCreacion() {
             this.creando = true;
+            this.editando = false;
         },
 
         cancelarCreacion() {
             this.creando = false;
         },
 
+        iniciarEdicion() {
+            this.editando = true;
+            this.creando = false;
+        },
+
+        cancelarEdicion() {
+            this.editando = false;
+        },
+
         seleccionarLogin(login) {
-            if (this.creando) {
+            if (this.creando || this.editando) {
                 return;
             }
             this.loginSeleccionado = login;
@@ -57,32 +68,53 @@
             } finally {
                 this.cargando = false;
             }
+        },
+
+        async eliminarLogin() {
+            if (!confirm('¿Estás seguro de que deseas eliminar este login? Esta acción no se puede deshacer.')) return;
+            
+            const token = localStorage.getItem('jwt_token');
+            try {
+                const response = await fetch(`/api/logins/${this.loginSeleccionado.id_login}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json'
+                    }
+                });
+                if (response.ok || response.status === 200 || response.status === 204) {
+                    this.loginSeleccionado = null;
+                    this.mensajeExito = '¡Login eliminado exitosamente!';
+                    await this.cargarLogins();
+                } else {
+                    //alert('No se pudo eliminar el login.');
+                }
+            } catch(e) {
+                //alert('Error de conexión al intentar eliminar.');
+            }
         }
     }"
-    @login-creado.window="await cargarLogins(); if($event.detail) loginSeleccionado = $event.detail; creando = false; mensajeExito = '¡Login registrado exitosamente en tu bóveda!'"
-    class="h-full w-full flex border border-slate-800 bg-slate-900 overflow-hidden shadow-xl">
+    @login-creado.window="
+        await cargarLogins();
+        if($event.detail)
+            loginSeleccionado = $event.detail;
+            creando = false;
+        "
 
-    {{-- Diálogo / Modal de Éxito --}}
-    <div
-        x-show="mensajeExito"
-        x-cloak
-        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
-        <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 max-w-sm w-full text-center space-y-4 shadow-2xl">
-            <div class="w-12 h-12 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto">
-                <svg class="w-6 h-6 stroke-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                </svg>
-            </div>
-            <h3 class="text-lg font-bold text-white tracking-tight">¡Registro Exitoso!</h3>
-            <p class="text-xs text-slate-300 leading-relaxed" x-text="mensajeExito"></p>
-            <button
-                type="button"
-                @click="mensajeExito = null"
-                class="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold rounded-lg transition-colors shadow-sm">
-                Aceptar
-            </button>
-        </div>
-    </div>
+    @login-actualizado.window="
+        await cargarLogins();
+        if($event.detail)
+            loginSeleccionado = $event.detail;
+            editando = false;
+            console.log($event.detail);
+            window.toastr.success('¡Login registrado exitosamente en tu bóveda!', 'Éxito');
+        "
+
+    @login-error.window="
+        if($event.detail)
+        "
+
+    class="h-full w-full flex border border-slate-800 bg-slate-900 overflow-hidden shadow-xl">
 
     {{-- Panel Izquierdo: Lista de Logins (Componente Independiente) --}}
     <div class="w-80 md:w-96 shrink-0 h-full">
@@ -91,20 +123,27 @@
 
     {{-- Panel Derecho: Formulario de Creación O Detalle del Login Seleccionado --}}
     <div class="flex-1 h-full flex flex-col overflow-hidden p-6"
-        :class="creando ? 'bg-slate-950' : 'bg-slate-950/60'">
+        :class="(creando || editando) ? 'bg-slate-950' : 'bg-slate-950/60'">
 
         {{-- Modo Creación: Despliega el formulario embebido en el panel derecho --}}
         <div x-show="creando" class="h-full">
             <x-logins.formulario-crear />
         </div>
 
+        {{-- Modo Edición: Despliega el formulario de edición en el panel derecho --}}
+        <div x-show="editando" class="h-full">
+            <template x-if="editando && loginSeleccionado">
+                <x-logins.formulario-editar />
+            </template>
+        </div>
+
         {{-- Modo Detalle: Despliega los datos del login seleccionado --}}
-        <template x-if="!creando && loginSeleccionado">
+        <template x-if="!creando && !editando && loginSeleccionado">
             <x-logins.detalle />
         </template>
 
         {{-- Modo Vacío: Cuando no hay selección activa --}}
-        <template x-if="!creando && !loginSeleccionado && !cargando">
+        <template x-if="!creando && !editando && !loginSeleccionado && !cargando">
             <div class="h-full flex flex-col items-center justify-center text-center p-8">
                 <div class="w-16 h-16 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-500 mb-4 shadow-inner">
                     <x-icon.vault class="w-8 h-8 opacity-40" />

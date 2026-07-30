@@ -1,7 +1,7 @@
 {{--
     Componente independiente de la lista vertical de logins.
 --}}
-<div class="flex flex-col h-full bg-slate-900 border-r border-slate-700/80 text-slate-100 min-w-0">
+<div class="flex flex-col h-full bg-slate-900 border-r border-slate-700/80 text-slate-100 min-w-l">
 
     {{-- Encabezado de la lista --}}
     <div class="p-4 border-b border-slate-700/80 flex items-center justify-between shrink-0 bg-slate-900/90 backdrop-blur">
@@ -9,7 +9,7 @@
             <x-icon.globe class="w-5 h-5 text-blue-400" />
             <h3 class="text-base font-bold tracking-tight text-white">Logins</h3>
         </div>
-        <span class="text-xs px-2 py-0.5 rounded-full bg-slate-800 border border-slate-700/60 text-slate-300 font-mono" x-text="logins.length">0</span>
+        <span class="text-xs px-2 py-1 rounded-full bg-slate-800 border border-slate-700/60 text-slate-300 font-mono" x-text="logins.length">0</span>
     </div>
 
     {{-- Cuerpo scrolleable de la lista --}}

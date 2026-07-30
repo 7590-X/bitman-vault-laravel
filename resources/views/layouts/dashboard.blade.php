@@ -100,6 +100,8 @@
 
         document.addEventListener('DOMContentLoaded', loadUserInfo);
     </script>
+    
+    @stack('scripts')
 </body>
 
 </html>
