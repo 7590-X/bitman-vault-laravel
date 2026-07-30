@@ -7,9 +7,26 @@
         cargando: true,
         error: null,
         loginSeleccionado: null,
+        creando: false,
+        mensajeExito: null,
 
         async init() {
             await this.cargarLogins();
+        },
+
+        iniciarCreacion() {
+            this.creando = true;
+        },
+
+        cancelarCreacion() {
+            this.creando = false;
+        },
+
+        seleccionarLogin(login) {
+            if (this.creando) {
+                return;
+            }
+            this.loginSeleccionado = login;
         },
 
         async cargarLogins() {
@@ -42,61 +59,52 @@
             }
         }
     }"
+    @login-creado.window="await cargarLogins(); if($event.detail) loginSeleccionado = $event.detail; creando = false; mensajeExito = '¡Login registrado exitosamente en tu bóveda!'"
     class="h-full w-full flex border border-slate-800 bg-slate-900 overflow-hidden shadow-xl">
+
+    {{-- Diálogo / Modal de Éxito --}}
+    <div
+        x-show="mensajeExito"
+        x-cloak
+        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 max-w-sm w-full text-center space-y-4 shadow-2xl">
+            <div class="w-12 h-12 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto">
+                <svg class="w-6 h-6 stroke-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+            </div>
+            <h3 class="text-lg font-bold text-white tracking-tight">¡Registro Exitoso!</h3>
+            <p class="text-xs text-slate-300 leading-relaxed" x-text="mensajeExito"></p>
+            <button
+                type="button"
+                @click="mensajeExito = null"
+                class="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold rounded-lg transition-colors shadow-sm">
+                Aceptar
+            </button>
+        </div>
+    </div>
 
     {{-- Panel Izquierdo: Lista de Logins (Componente Independiente) --}}
     <div class="w-80 md:w-96 shrink-0 h-full">
         <x-logins.lista />
     </div>
 
-    {{-- Panel Derecho: Detalle del Login Seleccionado --}}
-    <div class="flex-1 h-full flex flex-col bg-slate-950/60 p-6 md:p-8 overflow-y-auto">
+    {{-- Panel Derecho: Formulario de Creación O Detalle del Login Seleccionado --}}
+    <div class="flex-1 h-full flex flex-col overflow-hidden p-6"
+        :class="creando ? 'bg-slate-950' : 'bg-slate-950/60'">
 
-        <template x-if="loginSeleccionado">
-            <div class="max-w-2xl w-full mx-auto space-y-6">
-                {{-- Cabecera del detalle --}}
-                <div class="flex items-start justify-between pb-5 border-b border-slate-800">
-                    <div class="flex items-center gap-4">
-                        <div class="w-14 h-14 rounded-xl bg-slate-800 border border-slate-700/80 flex items-center justify-center text-blue-400 shadow-md">
-                            <x-icon.globe class="w-8 h-8" />
-                        </div>
-                        <div>
-                            <h2 class="text-xl font-bold text-white tracking-tight" x-text="loginSeleccionado.nombre_sitio"></h2>
-                            <p class="text-sm text-slate-400 font-mono mt-0.5" x-text="loginSeleccionado.url || 'Sin URL registrada'"></p>
-                        </div>
-                    </div>
-                </div>
+        {{-- Modo Creación: Despliega el formulario embebido en el panel derecho --}}
+        <div x-show="creando" class="h-full">
+            <x-logins.formulario-crear />
+        </div>
 
-                {{-- Campos del detalle --}}
-                <div class="grid grid-cols-1 gap-4">
-                    {{-- Campo: Usuario --}}
-                    <div class="bg-slate-900/80 p-4 rounded-lg border border-slate-800">
-                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Usuario / Correo</label>
-                        <div class="flex items-center justify-between">
-                            <span class="text-sm font-medium text-slate-100 font-mono" x-text="loginSeleccionado.usuario_login || '—'"></span>
-                        </div>
-                    </div>
-
-                    {{-- Campo: Contraseña Encriptada --}}
-                    <div class="bg-slate-900/80 p-4 rounded-lg border border-slate-800">
-                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Contraseña (Encriptada)</label>
-                        <div class="flex items-center justify-between">
-                            <span class="text-sm font-mono text-slate-300 truncate max-w-md" x-text="loginSeleccionado.contrasena_encriptada || '••••••••'"></span>
-                        </div>
-                    </div>
-
-                    {{-- Campo: Notas adicionales --}}
-                    <template x-if="loginSeleccionado.notas">
-                        <div class="bg-slate-900/80 p-4 rounded-lg border border-slate-800">
-                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Notas</label>
-                            <p class="text-sm text-slate-300 leading-relaxed whitespace-pre-line" x-text="loginSeleccionado.notas"></p>
-                        </div>
-                    </template>
-                </div>
-            </div>
+        {{-- Modo Detalle: Despliega los datos del login seleccionado --}}
+        <template x-if="!creando && loginSeleccionado">
+            <x-logins.detalle />
         </template>
 
-        <template x-if="!loginSeleccionado && !cargando">
+        {{-- Modo Vacío: Cuando no hay selección activa --}}
+        <template x-if="!creando && !loginSeleccionado && !cargando">
             <div class="h-full flex flex-col items-center justify-center text-center p-8">
                 <div class="w-16 h-16 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-500 mb-4 shadow-inner">
                     <x-icon.vault class="w-8 h-8 opacity-40" />

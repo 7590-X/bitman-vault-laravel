@@ -1,19 +1,19 @@
 {{--
     Componente independiente de la lista vertical de logins.
 --}}
-<div class="flex flex-col h-full bg-slate-900 border-r border-slate-800 text-slate-100 min-w-0">
+<div class="flex flex-col h-full bg-slate-900 border-r border-slate-700/80 text-slate-100 min-w-0">
 
     {{-- Encabezado de la lista --}}
-    <div class="p-4 border-b border-slate-800 flex items-center justify-between shrink-0 bg-slate-900/90 backdrop-blur">
+    <div class="p-4 border-b border-slate-700/80 flex items-center justify-between shrink-0 bg-slate-900/90 backdrop-blur">
         <div class="flex items-center gap-2.5">
             <x-icon.globe class="w-5 h-5 text-blue-400" />
             <h3 class="text-base font-bold tracking-tight text-white">Logins</h3>
         </div>
-        <span class="text-xs px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 font-mono" x-text="logins.length">0</span>
+        <span class="text-xs px-2 py-0.5 rounded-full bg-slate-800 border border-slate-700/60 text-slate-300 font-mono" x-text="logins.length">0</span>
     </div>
 
     {{-- Cuerpo scrolleable de la lista --}}
-    <div class="flex-1 overflow-y-auto min-h-0 divide-y divide-slate-800/40">
+    <div class="flex-1 overflow-y-auto min-h-0 divide-y divide-slate-800/60">
 
         {{-- Estado de Carga --}}
         <template x-if="cargando">
@@ -39,9 +39,12 @@
             <div class="divide-y divide-slate-800/50">
                 <template x-for="login in logins" :key="login.id">
                     <div
-                        @click="loginSeleccionado = login"
-                        class="flex items-center gap-3 px-4 py-3 border-b border-slate-800/60 hover:bg-slate-800/80 cursor-pointer transition-colors duration-150 group"
-                        :class="loginSeleccionado && loginSeleccionado.id === login.id ? 'bg-slate-800 border-l-4 border-l-blue-500 font-semibold' : ''">
+                        @click="seleccionarLogin(login)"
+                        class="flex items-center gap-3 px-4 py-3 border-b border-slate-800/60 transition-colors duration-150 group"
+                        :class="[
+                            loginSeleccionado && loginSeleccionado.id === login.id && !creando ? 'bg-slate-800 border-l-4 border-l-blue-500 font-semibold' : '',
+                            creando ? 'opacity-50 cursor-not-allowed' : 'hover:bg-slate-800/80 cursor-pointer'
+                        ]">
                         {{-- Icono --}}
                         <div class="w-9 h-9 rounded-lg bg-slate-800 border border-slate-700/70 flex items-center justify-center shrink-0 text-slate-300 group-hover:border-blue-500/50 group-hover:text-blue-400 transition-colors">
                             <x-icon.globe class="w-5 h-5" />
@@ -59,11 +62,12 @@
     </div>
 
     {{-- Pie inferior estático con botón siempre visible para Crear Login --}}
-    <div class="p-3 bg-slate-900 border-t border-slate-800 shrink-0">
+    <div class="p-3 bg-slate-900 border-t border-slate-700/80 shrink-0">
         <button
             type="button"
-            @click="$dispatch('abrir-modal-crear-login')"
-            class="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white font-medium text-sm rounded-lg transition-colors duration-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50">
+            @click="iniciarCreacion()"
+            :disabled="creando"
+            class="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white font-medium text-sm rounded-lg transition-colors duration-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 disabled:opacity-50 disabled:cursor-not-allowed">
             <svg class="w-4 h-4 stroke-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
             </svg>
