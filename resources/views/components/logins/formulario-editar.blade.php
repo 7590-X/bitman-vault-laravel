@@ -4,84 +4,7 @@
     Utiliza los componentes compartidos estandarizados en <x-share.*>.
 --}}
 <div
-    x-data="{
-        enviando: false,
-        mostrarPassword: false,
-        errores: {},
-        errorGeneral: null,
-        form: {
-            nombre_sitio: '',
-            url: '',
-            usuario_login: '',
-            contrasena_encriptada: '',
-            notas: ''
-        },
-
-        init() {
-            this.resetForm();
-        },
-
-        resetForm() {
-            if (this.loginSeleccionado) {
-                this.form = {
-                    nombre_sitio: this.loginSeleccionado.nombre_sitio || '',
-                    url: this.loginSeleccionado.url || '',
-                    usuario_login: this.loginSeleccionado.usuario_login || '',
-                    contrasena_encriptada: this.loginSeleccionado.contrasena_encriptada || '',
-                    notas: this.loginSeleccionado.notas || ''
-                };
-            }
-            this.errores = {};
-            this.errorGeneral = null;
-            this.mostrarPassword = false;
-        },
-
-        validarLocal() {
-            this.errores = {};
-            if (!this.form.nombre_sitio || !this.form.nombre_sitio.trim()) {
-                this.errores.nombre_sitio = ['El nombre del sitio es obligatorio.'];
-            }
-            if (!this.form.contrasena_encriptada) {
-                this.errores.contrasena_encriptada = ['La contraseña es obligatoria.'];
-            }
-            return Object.keys(this.errores).length === 0;
-        },
-
-        async actualizar() {
-            if (!this.validarLocal()) return;
-            this.enviando = true;
-            this.errorGeneral = null;
-            const token = localStorage.getItem('jwt_token');
-            try {
-                const response = await fetch(`/api/logins/${this.loginSeleccionado.id}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`,
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify(this.form)
-                });
-                const json = await response.json();
-
-                if (response.ok || response.status === 200) {
-                    
-                    $dispatch('login-actualizado', json.datos);
-                } else if (response.status === 422) {
-                    this.errores = json.errors || {};
-                    this.errorGeneral = json.message || 'Corrige los errores del formulario.';
-                } else {
-                    this.errorGeneral = json.mensaje || 'Ocurrió un error al intentar actualizar.';
-                    window.toastr.error(this.errorGeneral, 'Error');
-                }
-            } catch (e) {
-                this.errorGeneral = 'Error de conexión con el servidor.';
-                window.toastr.error(this.errorGeneral, 'Error');
-            } finally {
-                this.enviando = false;
-            }
-        }
-    }"
+    x-data="editarLoginComponent()"
     class="h-full flex flex-col max-w-xl min-h-0">
     {{-- ─── Encabezado del Formulario ──────────────────────────────────────── --}}
     <x-share.panel-header
@@ -95,13 +18,6 @@
     {{-- ─── Cuerpo del Formulario (scrolleable) ────────────────────────────── --}}
     <div class="px-8 py-4 flex-1 overflow-y-auto min-h-0">
         <form @submit.prevent="actualizar()" id="form-editar-login" class=" space-y-5">
-
-            {{-- Alerta de Error General --}}
-            <template x-if="errorGeneral">
-                <x-share.alert tipo="error">
-                    <span x-text="errorGeneral"></span>
-                </x-share.alert>
-            </template>
 
             {{-- Fila 1: Nombre del sitio (ancho completo) --}}
             <x-share.input
@@ -163,3 +79,89 @@
         </x-share.button>
     </div>
 </div>
+@push('scripts')
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('editarLoginComponent', () => ({
+            enviando: false,
+            mostrarPassword: false,
+            errores: {},
+            errorGeneral: null,
+            form: {
+                nombre_sitio: '',
+                url: '',
+                usuario_login: '',
+                contrasena_encriptada: '',
+                notas: ''
+            },
+
+            init() {
+                this.resetForm();
+            },
+
+            resetForm() {
+                if (this.loginSeleccionado) {
+                    this.form = {
+                        nombre_sitio: this.loginSeleccionado.nombre_sitio || '',
+                        url: this.loginSeleccionado.url || '',
+                        usuario_login: this.loginSeleccionado.usuario_login || '',
+                        contrasena_encriptada: this.loginSeleccionado.contrasena_encriptada || '',
+                        notas: this.loginSeleccionado.notas || ''
+                    };
+                }
+                this.errores = {};
+                this.errorGeneral = null;
+                this.mostrarPassword = false;
+            },
+
+            validarLocal() {
+                this.errores = {};
+                if (!this.form.nombre_sitio || !this.form.nombre_sitio.trim()) {
+                    this.errores.nombre_sitio = ['El nombre del sitio es obligatorio.'];
+                }
+                if (!this.form.contrasena_encriptada) {
+                    this.errores.contrasena_encriptada = ['La contraseña es obligatoria.'];
+                }
+                return Object.keys(this.errores).length === 0;
+            },
+
+            async actualizar() {
+                if (!this.validarLocal()) return;
+                this.enviando = true;
+                this.errorGeneral = null;
+                const token = localStorage.getItem('jwt_token');
+                try {
+                    const response = await fetch(`/api/logins/${this.loginSeleccionado.id}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`,
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify(this.form)
+                    });
+                    const json = await response.json();
+
+                    if (response.ok || response.status === 200) {
+                        window.toastr.success('Login actualizado exitosamente', 'Actualizado')
+                        this.$dispatch(LoginEvents.MODIFICADO, json.datos);
+                    } else if (response.status === 422) {
+                        this.errores = json.errors || {};
+                        this.errorGeneral = json.message || 'Corrige los errores del formulario.';
+                    } else {
+                        this.errorGeneral = json.mensaje || 'Ocurrió un error al intentar actualizar.';
+                    }
+                } catch (e) {
+                    this.errorGeneral = 'Error de conexión con el servidor.';
+                    window.toastr.error(e.message, 'Error');
+                } finally {
+                    this.enviando = false;
+                    if (errorGeneral !== null) {
+                        window.toastr.error(errorGeneral, 'Error al Actualizar')
+                    }
+                }
+            }
+        }));
+    });
+</script>
+@endpush

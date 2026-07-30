@@ -152,12 +152,11 @@
 
                     if (response.ok || response.status === 201) {
                         this.resetForm();
-                        window.toastr.success('Login registrado correctamente en BITMAN Vault', 'Registro Exitoso')
+                        window.toastr.success('Login registrado correctamente', 'Nuevo')
                         this.$dispatch(LoginEvents.CREADO, json.datos);
                     } else if (response.status === 422) {
                         this.errores = json.errors || {};
                         this.errorGeneral = json.message || 'Corrige los errores del formulario.';
-
                     } else {
                         this.errorGeneral = json.mensaje || 'Ocurrió un error al intentar guardar.';
                     }
@@ -165,7 +164,7 @@
                     this.errorGeneral = 'Error de conexión con el servidor.';
                 } finally {
                     if (this.errorGeneral !== null) {
-                        window.toastr.error(errorGeneral, 'Error Ocurrió un Problema')
+                        window.toastr.error(errorGeneral, 'Error al Guardar')
                     }
                     this.enviando = false;
                 }

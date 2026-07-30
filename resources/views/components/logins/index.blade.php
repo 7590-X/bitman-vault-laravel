@@ -106,12 +106,6 @@
         if($event.detail)
             loginSeleccionado = $event.detail;
             editando = false;
-            console.log($event.detail);
-            window.toastr.success('¡Login registrado exitosamente en tu bóveda!', 'Éxito');
-        "
-
-    @login-error.window="
-        if($event.detail)
         "
 
     class="h-full w-full flex border border-slate-800 bg-slate-900 overflow-hidden shadow-xl">
