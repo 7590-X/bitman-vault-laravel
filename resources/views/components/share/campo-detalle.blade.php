@@ -11,9 +11,9 @@
       El nodo siempre está en el DOM (oculto con CSS) para que el Clipboard API pueda leer el texto.
 --}}
 @props([
-    'etiqueta' => '',
-    'oculto'   => false,
-    'copiable' => false,
+'etiqueta' => '',
+'oculto' => false,
+'copiable' => false,
 ])
 
 <div
@@ -31,8 +31,7 @@
             } catch(e) {}
         }
     }"
-    class="rounded-lg border border-slate-700/80 bg-slate-900 overflow-hidden"
->
+    class="rounded-lg border border-slate-700/80 bg-slate-900 overflow-hidden">
     {{-- ─── Header: Etiqueta + Acciones ────────────────────────── --}}
     <div class="px-4 py-2 border-b border-slate-700/60 bg-slate-800/40 flex items-center justify-between gap-2">
         <span class="text-xs font-semibold uppercase tracking-widest text-slate-400 leading-none">
@@ -46,10 +45,9 @@
             <button
                 type="button"
                 @click="visible = !visible"
-                class="inline-flex items-center gap-1 text-xs font-medium text-slate-400 hover:text-slate-100 bg-slate-800 hover:bg-slate-700 border border-slate-700/60 rounded px-2 py-0.5 transition-colors select-none"
-            >
-                <x-icon.eye-off x-show="visible" class="w-3.5 h-3.5 shrink-0" />
-                <x-icon.eye    x-show="!visible" class="w-3.5 h-3.5 shrink-0" />
+                class="inline-flex items-center gap-1 text-xs font-medium text-slate-400 hover:text-slate-100 bg-slate-800 hover:bg-slate-700 border border-slate-700/60 rounded px-2 py-0.5 transition-colors select-none">
+                <span x-show="visible"><x-icon.eye-off class="w-3.5 h-3.5 shrink-0" /></span>
+                <span x-show="!visible"><x-icon.eye class="w-3.5 h-3.5 shrink-0" /></span>
                 <span x-text="visible ? 'Ocultar' : 'Ver'"></span>
             </button>
             @endif
@@ -59,13 +57,13 @@
             <button
                 type="button"
                 @click="copiar()"
-                class="inline-flex items-center gap-1 text-xs font-medium border rounded px-2 py-0.5 transition-all select-none"
-                :class="copiado
-                    ? 'text-emerald-400 border-emerald-500/40 bg-emerald-500/10'
-                    : 'text-slate-400 hover:text-slate-100 bg-slate-800 hover:bg-slate-700 border-slate-700/60'"
+                class="inline-flex items-center gap-1 text-xs font-medium rounded px-2 py-0.5 select-none transition-all duration-200"
+                :style="copiado
+                    ? 'color:#34d399; border:1px solid rgba(16,185,129,0.4); background:rgba(16,185,129,0.1);'
+                    : 'color:#94a3b8; border:1px solid rgba(100,116,139,0.4); background:#1e293b;'"
             >
-                <x-icon.copy  x-show="!copiado" class="w-3.5 h-3.5 shrink-0" />
-                <x-icon.check x-show="copiado"  class="w-3.5 h-3.5 shrink-0" />
+                <span x-show="!copiado" style="display:inline-flex"><x-icon.copy class="w-3.5 h-3.5 shrink-0" /></span>
+                <span x-show="copiado"  style="display:none"><x-icon.check class="w-3.5 h-3.5 shrink-0" /></span>
                 <span x-text="copiado ? 'Copiado' : 'Copiar'"></span>
             </button>
             @endif
@@ -77,28 +75,25 @@
     <div class="px-4 py-3 min-h-[2.75rem] flex items-center">
 
         @if($oculto)
-            {{--
+        {{--
                 Siempre renderizamos el slot en el DOM (oculto visualmente con CSS)
                 para que $refs.valorTexto tenga el texto disponible para el Clipboard API.
             --}}
-            {{-- Asteriscos: visibles cuando el campo está oculto --}}
-            <span
-                x-show="!visible"
-                class="text-sm font-mono text-slate-500 tracking-[0.3em] select-none"
-                aria-hidden="true"
-            >••••••••••••</span>
-            {{-- Valor real: siempre en el DOM, visible o invisible según toggle --}}
-            <span
-                x-ref="valorTexto"
-                :class="visible ? 'text-slate-100' : 'sr-only'"
-                class="text-sm font-mono break-all"
-            >{{ $slot }}</span>
+        {{-- Asteriscos: visibles cuando el campo está oculto --}}
+        <span
+            x-show="!visible"
+            class="text-sm font-mono text-slate-500 tracking-[0.3em] select-none"
+            aria-hidden="true">••••••••••••</span>
+        {{-- Valor real: siempre en el DOM, visible o invisible según toggle --}}
+        <span
+            x-ref="valorTexto"
+            :class="visible ? 'text-slate-100' : 'sr-only'"
+            class="text-sm font-mono break-all">{{ $slot }}</span>
         @else
-            {{-- Campo normal / sólo copiable --}}
-            <span
-                x-ref="valorTexto"
-                class="text-sm font-mono text-slate-100 break-all"
-            >{{ $slot }}</span>
+        {{-- Campo normal / sólo copiable --}}
+        <span
+            x-ref="valorTexto"
+            class="text-sm font-mono text-slate-100 break-all">{{ $slot }}</span>
         @endif
 
     </div>

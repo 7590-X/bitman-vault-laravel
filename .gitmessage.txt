@@ -1,0 +1,16 @@
+[TIPO]: Breve descripción en imperativo (máx 50 caracteres)
+
+# Explica el POR QUÉ del cambio, no el CÓMO.
+# Línea en blanco entre el título y el cuerpo.
+
+# Tipos sugeridos:
+#   feat     (Nueva funcionalidad)
+#   fix      (Corrección de error)
+#   docs     (Documentación)
+#   refactor (Refactorización de código)
+#   test     (Añadir o modificar pruebas)
+#   chore    (Tareas de mantenimiento)
+
+# Ref/Ticket: #1234
+
+All in Spanish
