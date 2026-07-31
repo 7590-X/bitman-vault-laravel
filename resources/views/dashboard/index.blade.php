@@ -11,8 +11,7 @@
     {{-- GRUPO: Bóveda Principal --}}
     <x-sidebar.grupo titulo="All items" :abierto="true" icono="vault">
         <x-sidebar.item href="#/logins" titulo="Logins" icono="globe" />
-        <x-sidebar.item href="#/tarjetas-credito" titulo="Tarjetas de crédito" icono="credit-card" />
-        <x-sidebar.item href="#/tarjetas-debito" titulo="Tarjetas de débito" icono="card" />
+        <x-sidebar.item href="#/tarjetas" titulo="Tarjetas" icono="credit-card" />
         <x-sidebar.item href="#/notas-seguras" titulo="Notas seguras" icono="document" />
         <x-sidebar.item href="#/ssh-keys" titulo="SSH keys" icono="key" />
         <x-sidebar.item href="#/mfa" titulo="Códigos MFA (2FA)" icono="shield-check" />
@@ -45,7 +44,7 @@
 @endsection
 
 @section('contenido')
-<x-dashboard.content-logins />
+<x-dashboard.contenido />
 
 <script>
     // Enrutador SPA para actualización de títulos en la barra superior
@@ -54,8 +53,7 @@
 
         const routeTitles = {
             '#/logins': 'Logins (Credenciales)',
-            '#/tarjetas-credito': 'Tarjetas de Crédito',
-            '#/tarjetas-debito': 'Tarjetas de Débito',
+            '#/tarjetas': 'Tarjetas',
             '#/notas-seguras': 'Notas Seguras',
             '#/ssh-keys': 'SSH Keys',
             '#/mfa': 'Códigos MFA (2FA)',
