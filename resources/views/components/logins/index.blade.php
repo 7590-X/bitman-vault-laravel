@@ -1,112 +1,26 @@
 {{--
     Componente maestro para la gestión de Logins en el Dashboard.
 --}}
-<div
-    x-data="{
-        logins: [],
-        cargando: true,
-        error: null,
-        loginSeleccionado: null,
-        creando: false,
-        editando: false,
-        mensajeExito: null,
-
-        async init() {
-            await this.cargarLogins();
-        },
-
-        iniciarCreacion() {
-            this.creando = true;
-            this.editando = false;
-        },
-
-        cancelarCreacion() {
-            this.creando = false;
-        },
-
-        iniciarEdicion() {
-            this.editando = true;
-            this.creando = false;
-        },
-
-        cancelarEdicion() {
-            this.editando = false;
-        },
-
-        seleccionarLogin(login) {
-            if (this.creando || this.editando) {
-                return;
-            }
-            this.loginSeleccionado = login;
-        },
-
-        async cargarLogins() {
-            this.cargando = true;
-            this.error = null;
-            const token = localStorage.getItem('jwt_token');
-
-            try {
-                const response = await fetch('/api/logins', {
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Accept': 'application/json'
-                    }
-                });
-
-                if (response.ok) {
-                    const json = await response.json();
-                    this.logins = json.datos || [];
-                    if (this.logins.length > 0 && !this.loginSeleccionado) {
-                        this.loginSeleccionado = this.logins[0];
-                    }
-                } else {
-                    this.logins = [];
-                }
-            } catch (e) {
-                this.error = 'Error de conexión';
-                this.logins = [];
-            } finally {
-                this.cargando = false;
-            }
-        },
-
-        async eliminarLogin() {
-            if (!confirm('¿Estás seguro de que deseas eliminar este login? Esta acción no se puede deshacer.')) return;
-            
-            const token = localStorage.getItem('jwt_token');
-            try {
-                const response = await fetch(`/api/logins/${this.loginSeleccionado.id_login}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Accept': 'application/json'
-                    }
-                });
-                if (response.ok || response.status === 200 || response.status === 204) {
-                    this.loginSeleccionado = null;
-                    this.mensajeExito = '¡Login eliminado exitosamente!';
-                    await this.cargarLogins();
-                } else {
-                    //alert('No se pudo eliminar el login.');
-                }
-            } catch(e) {
-                //alert('Error de conexión al intentar eliminar.');
-            }
-        }
-    }"
+<div x-data="indexLoginComponent"
     @login-creado.window="
         await cargarLogins();
         if($event.detail)
             loginSeleccionado = $event.detail;
-            creando = false;
-        "
+            creando = false;"
 
     @login-actualizado.window="
         await cargarLogins();
         if($event.detail)
             loginSeleccionado = $event.detail;
-            editando = false;
-        "
+            editando = false;"
+
+    @login-eliminado.window="
+        const eliminadoId = $event.detail
+        logins = logins.filter(l => l.id !== eliminadoId)"
+
+    @login-form-cerrado="
+        cancelarCreacion()
+    "
 
     class="h-full w-full flex border border-slate-800 bg-slate-900 overflow-hidden shadow-xl">
 
@@ -150,3 +64,77 @@
     </div>
 
 </div>
+@push('scripts')
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('indexLoginComponent', () => ({
+            logins: [],
+            cargando: true,
+            error: null,
+            loginSeleccionado: null,
+            creando: false,
+            editando: false,
+            mensajeExito: null,
+
+            async init() {
+                await this.cargarLogins();
+            },
+
+            iniciarCreacion() {
+                this.creando = true;
+                this.editando = false;
+            },
+
+            cancelarCreacion() {
+                this.creando = false;
+            },
+
+            iniciarEdicion() {
+                this.editando = true;
+                this.creando = false;
+            },
+
+            cancelarEdicion() {
+                this.editando = false;
+            },
+
+            seleccionarLogin(login) {
+                if (this.creando || this.editando) {
+                    return;
+                }
+                this.loginSeleccionado = login;
+            },
+
+            async cargarLogins() {
+                this.cargando = true;
+                this.error = null;
+                const token = localStorage.getItem('jwt_token');
+
+                try {
+                    const response = await fetch('/api/logins', {
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Accept': 'application/json'
+                        }
+                    });
+
+                    if (response.ok) {
+                        const json = await response.json();
+                        this.logins = json.datos || [];
+                        if (this.logins.length > 0 && !this.loginSeleccionado) {
+                            this.loginSeleccionado = this.logins[0];
+                        }
+                    } else {
+                        this.logins = [];
+                    }
+                } catch (e) {
+                    this.error = 'Error de conexión';
+                    this.logins = [];
+                } finally {
+                    this.cargando = false;
+                }
+            }
+        }))
+    })
+</script>
+@endpush

@@ -3,7 +3,7 @@
     Accede al estado del componente padre (loginSeleccionado) a través del scope de Alpine.js.
     Reutilizable en cualquier vista que tenga disponible la variable `loginSeleccionado` en su contexto Alpine.
 --}}
-<div class="h-full max-w-xl flex flex-col min-h-0 overflow-hidden">
+<div x-data="detalleLoginComponent" class="h-full max-w-xl flex flex-col min-h-0 overflow-hidden">
 
     {{-- ─── Encabezado del Detalle ──────────────────────────────────────── --}}
     <x-share.panel-header>
@@ -70,3 +70,32 @@
         </x-share.button>
     </div>
 </div>
+@push('scripts')
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('detalleLoginComponent', () => ({
+            async eliminarLogin() {
+                const token = localStorage.getItem('jwt_token');
+                try {
+                    const response = await fetch(`/api/logins/${this.loginSeleccionado.id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Accept': 'application/json'
+                        }
+                    });
+                    if (response.ok || response.status === 200 || response.status === 204) {
+                        window.toastr.info('Login eliminado correctamente', 'Eliminado');
+                        this.$dispatch(LoginEvents.ELIMINADO, this.loginSeleccionado.id);
+                        this.loginSeleccionado = null;
+                    } else {
+                        window.toastr.error('No se pudo eliminar el login', 'Error')
+                    }
+                } catch (e) {
+                    window.toastr.error(e.message, 'Error')
+                }
+            }
+        }))
+    })
+</script>
+@endpush

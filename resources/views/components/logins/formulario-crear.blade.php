@@ -107,7 +107,6 @@
                 this.errorGeneral = null;
                 this.mostrarPassword = false;
             },
-
             validarLocal() {
                 this.errores = {};
                 if (!this.form.nombre_sitio || !this.form.nombre_sitio.trim()) {
@@ -118,13 +117,9 @@
                 }
                 return Object.keys(this.errores).length === 0;
             },
-
-            // He añadido esta función ya que la llamas en el botón "Cancelar"
-            // pero no estaba definida en tu código original.
             cancelarCreacion() {
                 this.resetForm();
-                // Aquí puedes despachar un evento para cerrar el panel, por ejemplo:
-                // this.$dispatch('cerrar-panel');
+                this.$dispatch(LoginEvents.FORM_CERRADO)
             },
 
             async guardar() {
