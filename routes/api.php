@@ -35,4 +35,5 @@ Route::middleware('jwt.auth')->group(function () {
     });
 
     Route::apiResource('logins', ControladorLogin::class)->except(['show']);
+    Route::apiResource('tarjetas', App\Presentation\Http\Controllers\ControladorTarjeta::class)->except(['show']);
 });

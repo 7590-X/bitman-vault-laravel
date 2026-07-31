@@ -34,6 +34,11 @@ class AppServiceProvider extends ServiceProvider
             \App\Domain\Puertos\RepositorioLogin::class,
             \App\Infrastructure\Repositorios\RepositorioLoginEloquent::class
         );
+
+        $this->app->bind(
+            \App\Domain\Puertos\RepositorioTarjeta::class,
+            \App\Infrastructure\Repositorios\RepositorioTarjetaEloquent::class
+        );
     }
 
     /**
