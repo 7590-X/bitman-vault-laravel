@@ -9,6 +9,9 @@ import 'toastr/build/toastr.min.css';
 import { Dialog } from './dialog.js';
 window.Dialog = Dialog;
 
+import { SSHKeyGeneratorService } from './ssh/ssh-generator.js';
+window.SSHKeyGenerator = SSHKeyGeneratorService;
+
 // Configuración global de Toastr para mantener consistencia en todo el proyecto
 toastr.options = {
     "closeButton": true,
