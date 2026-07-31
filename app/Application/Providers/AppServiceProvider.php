@@ -44,6 +44,11 @@ class AppServiceProvider extends ServiceProvider
             \App\Domain\Puertos\RepositorioTipoTarjeta::class,
             \App\Infrastructure\Repositorios\RepositorioTipoTarjetaEloquent::class
         );
+
+        $this->app->bind(
+            \App\Domain\Puertos\RepositorioLlaveSsh::class,
+            \App\Infrastructure\Repositorios\RepositorioLlaveSshEloquent::class
+        );
     }
 
     /**
