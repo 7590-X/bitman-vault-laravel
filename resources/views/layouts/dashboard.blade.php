@@ -34,20 +34,8 @@
 
     {{-- Área Principal (Derecha) --}}
     <div class="flex-1 flex flex-col h-full bg-slate-50">
-        {{-- Topbar (Opcional, barra superior) --}}
-        <header class="h-14 bg-white border-b border-slate-200 flex items-center justify-between px-6 shrink-0">
-            <h2 id="topbar-title" class="text-lg font-semibold text-slate-800">Cargando...</h2>
-
-            {{-- Menú de usuario / Logout --}}
-            <div class="flex items-center gap-4">
-                <span id="user-email-display" class="text-sm font-medium text-slate-600">...</span>
-                <button
-                    onclick="logout()"
-                    class="text-sm text-slate-500 hover:text-red-600 font-medium transition-colors duration-200">
-                    Cerrar sesión
-                </button>
-            </div>
-        </header>
+        {{-- Topbar (Barra superior) --}}
+        <x-dashboard.topbar />
 
         {{-- Contenedor SPA Dinámico --}}
         <main id="app-content" class="flex-1 overflow-y-auto">
@@ -80,26 +68,9 @@
                 console.error('Error al cargar datos del usuario', e);
             }
         }
-
-        async function logout() {
-            const token = localStorage.getItem('jwt_token');
-            if (token) {
-                try {
-                    await fetch('/api/auth/logout', {
-                        method: 'POST',
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
-                    });
-                } catch (e) {}
-            }
-            localStorage.removeItem('jwt_token');
-            window.location.href = '/login';
-        }
-
         document.addEventListener('DOMContentLoaded', loadUserInfo);
     </script>
-    
+
     @stack('scripts')
 </body>
 
