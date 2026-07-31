@@ -9,6 +9,8 @@ use App\Application\Comandos\ComandoGuardarLlaveSsh;
 use App\Application\Comandos\ManejadorGuardarLlaveSsh;
 use App\Application\Comandos\ComandoEliminarLlaveSsh;
 use App\Application\Comandos\ManejadorEliminarLlaveSsh;
+use App\Presentation\Http\Responses\ApiResponse;
+use App\Presentation\Http\Responses\HttpCode;
 
 class ControladorLlaveSsh extends Controller
 {
@@ -19,7 +21,7 @@ class ControladorLlaveSsh extends Controller
     {
         $usuario = (int) auth('api')->id();
         if (!$usuario) {
-            return response()->json(['error' => 'No autorizado'], 401);
+            return ApiResponse::error('No autorizado', HttpCode::UNAUTHORIZED);
         }
 
         $llaves = $manejador->ejecutar($usuario);
@@ -34,7 +36,7 @@ class ControladorLlaveSsh extends Controller
     {
         $usuario = (int) auth('api')->id();
         if (!$usuario) {
-            return response()->json(['error' => 'No autorizado'], 401);
+            return ApiResponse::error('No autorizado', HttpCode::UNAUTHORIZED);
         }
 
         $validated = $request->validate([
@@ -52,12 +54,9 @@ class ControladorLlaveSsh extends Controller
             frasePasoEncriptada: $validated['frase_paso_encriptada'] ?? null
         );
 
-        $llaveGenerada = $manejador->ejecutar($comando);
+        $manejador->ejecutar($comando);
 
-        return response()->json([
-            'mensaje' => 'Llave SSH guardada correctamente',
-            'datos' => $llaveGenerada
-        ], 201);
+        return ApiResponse::exito('Llave SSH guardada correctamente', codigo: HttpCode::CREATED);
     }
 
     /**
@@ -67,7 +66,7 @@ class ControladorLlaveSsh extends Controller
     {
         $usuario = (int) auth('api')->id();
         if (!$usuario) {
-            return response()->json(['error' => 'No autorizado'], 401);
+            return ApiResponse::error('No autorizado', HttpCode::UNAUTHORIZED);
         }
 
         $comando = new ComandoEliminarLlaveSsh(
@@ -78,13 +77,9 @@ class ControladorLlaveSsh extends Controller
         $eliminado = $manejador->ejecutar($comando);
 
         if (!$eliminado) {
-            return response()->json([
-                'error' => 'La llave SSH no fue encontrada o no pertenece al usuario.'
-            ], 404);
+            return ApiResponse::error('La llave SSH no fue encontrada o no pertenece al usuario.', HttpCode::NOT_FOUND);
         }
 
-        return response()->json([
-            'mensaje' => 'Llave SSH eliminada correctamente'
-        ], 200);
+        return ApiResponse::exito('Llave SSH eliminada correctamente');
     }
 }

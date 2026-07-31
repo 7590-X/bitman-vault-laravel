@@ -19,9 +19,10 @@ use App\Presentation\Http\Requests\SolicitudActualizarTarjeta;
 use App\Presentation\Http\Requests\SolicitudCrearTarjeta;
 use DateTimeImmutable;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use RuntimeException;
+use App\Presentation\Http\Responses\ApiResponse;
+use App\Presentation\Http\Responses\HttpCode;
 
 class ControladorTarjeta extends Controller
 {
@@ -41,7 +42,7 @@ class ControladorTarjeta extends Controller
         $usuarioId = (int) auth('api')->id();
         $tarjetas = $this->manejadorObtener->manejar($usuarioId);
 
-        $datos = array_map(fn (Tarjeta $tarjeta) => $this->transformarRespuesta($tarjeta), $tarjetas);
+        $datos = array_map(fn(Tarjeta $tarjeta) => $this->transformarRespuesta($tarjeta), $tarjetas);
 
         return response()->json([
             'datos' => $datos,
@@ -57,23 +58,20 @@ class ControladorTarjeta extends Controller
         $usuarioId = (int) auth('api')->id();
 
         $comando = new ComandoCrearTarjeta(
-            usuarioId:        $usuarioId,
-            tipoTarjetaId:    $solicitud->validated('tipo_tarjeta_id'),
-            alias:            $solicitud->validated('alias'),
+            usuarioId: $usuarioId,
+            tipoTarjetaId: $solicitud->validated('tipo_tarjeta_id'),
+            alias: $solicitud->validated('alias'),
             numeroEncriptado: $solicitud->validated('numero_encriptado'),
-            ultimos4Digitos:  $solicitud->validated('ultimos_4_digitos'),
-            nombreTitular:    $solicitud->validated('nombre_titular'),
-            fechaExpiracion:  new DateTimeImmutable($solicitud->validated('fecha_expiracion')),
-            cvvEncriptado:    $solicitud->validated('cvv_encriptado'),
-            bancoEmisor:      $solicitud->validated('banco_emisor'),
+            ultimos4Digitos: $solicitud->validated('ultimos_4_digitos'),
+            nombreTitular: $solicitud->validated('nombre_titular'),
+            fechaExpiracion: new DateTimeImmutable($solicitud->validated('fecha_expiracion')),
+            cvvEncriptado: $solicitud->validated('cvv_encriptado'),
+            bancoEmisor: $solicitud->validated('banco_emisor'),
         );
 
-        $tarjeta = $this->manejadorCrear->manejar($comando);
+        $this->manejadorCrear->manejar($comando);
 
-        return response()->json([
-            'mensaje' => 'Tarjeta registrada exitosamente.',
-            'datos'   => $this->transformarRespuesta($tarjeta),
-        ], Response::HTTP_CREATED);
+        return ApiResponse::exito('Tarjeta registrada exitosamente.', codigo: HttpCode::CREATED);
     }
 
     /**
@@ -85,29 +83,27 @@ class ControladorTarjeta extends Controller
         $usuarioId = (int) auth('api')->id();
 
         $comando = new ComandoActualizarTarjeta(
-            id:               $id,
-            usuarioId:        $usuarioId,
-            tipoTarjetaId:    $solicitud->validated('tipo_tarjeta_id'),
-            alias:            $solicitud->validated('alias'),
+            id: $id,
+            usuarioId: $usuarioId,
+            tipoTarjetaId: $solicitud->validated('tipo_tarjeta_id'),
+            alias: $solicitud->validated('alias'),
             numeroEncriptado: $solicitud->validated('numero_encriptado'),
-            ultimos4Digitos:  $solicitud->validated('ultimos_4_digitos'),
-            nombreTitular:    $solicitud->validated('nombre_titular'),
-            fechaExpiracion:  new DateTimeImmutable($solicitud->validated('fecha_expiracion')),
-            cvvEncriptado:    $solicitud->validated('cvv_encriptado'),
-            bancoEmisor:      $solicitud->validated('banco_emisor'),
+            ultimos4Digitos: $solicitud->validated('ultimos_4_digitos'),
+            nombreTitular: $solicitud->validated('nombre_titular'),
+            fechaExpiracion: new DateTimeImmutable($solicitud->validated('fecha_expiracion')),
+            cvvEncriptado: $solicitud->validated('cvv_encriptado'),
+            bancoEmisor: $solicitud->validated('banco_emisor'),
         );
 
         try {
-            $tarjeta = $this->manejadorActualizar->manejar($comando);
+            $this->manejadorActualizar->manejar($comando);
         } catch (RuntimeException $ex) {
-            $codigo = $ex->getCode() >= 400 && $ex->getCode() < 600 ? $ex->getCode() : Response::HTTP_BAD_REQUEST;
-            return response()->json(['mensaje' => $ex->getMessage()], $codigo);
+            $codigoNum = $ex->getCode() >= 400 && $ex->getCode() < 600 ? $ex->getCode() : 400;
+            $codigoEnum = HttpCode::tryFrom($codigoNum) ?? HttpCode::BAD_REQUEST;
+            return ApiResponse::error($ex->getMessage(), $codigoEnum);
         }
 
-        return response()->json([
-            'mensaje' => 'Tarjeta actualizada exitosamente.',
-            'datos'   => $this->transformarRespuesta($tarjeta),
-        ]);
+        return ApiResponse::exito('Tarjeta actualizada exitosamente.');
     }
 
     /**
@@ -119,20 +115,19 @@ class ControladorTarjeta extends Controller
         $usuarioId = (int) auth('api')->id();
 
         $comando = new ComandoEliminarTarjeta(
-            id:        $id,
+            id: $id,
             usuarioId: $usuarioId,
         );
 
         try {
             $this->manejadorEliminar->manejar($comando);
         } catch (RuntimeException $ex) {
-            $codigo = $ex->getCode() >= 400 && $ex->getCode() < 600 ? $ex->getCode() : Response::HTTP_BAD_REQUEST;
-            return response()->json(['mensaje' => $ex->getMessage()], $codigo);
+            $codigoNum = $ex->getCode() >= 400 && $ex->getCode() < 600 ? $ex->getCode() : 400;
+            $codigoEnum = HttpCode::tryFrom($codigoNum) ?? HttpCode::BAD_REQUEST;
+            return ApiResponse::error($ex->getMessage(), $codigoEnum);
         }
 
-        return response()->json([
-            'mensaje' => 'Tarjeta eliminada exitosamente.',
-        ]);
+        return ApiResponse::exito('Tarjeta eliminada exitosamente.');
     }
 
     /**

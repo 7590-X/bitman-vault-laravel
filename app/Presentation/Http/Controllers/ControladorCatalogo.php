@@ -15,6 +15,7 @@ use App\Domain\Enums\EstadoUsuario;
 use App\Domain\Enums\MetodoEnvioMfa;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
+use App\Presentation\Http\Responses\ApiResponse;
 
 class ControladorCatalogo extends Controller
 {
