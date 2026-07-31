@@ -132,6 +132,7 @@ CREATE TABLE secretos.tarjetas (
   cvv_encriptado      TEXT         NOT NULL,
   banco_emisor        VARCHAR(100),
   creado_en           TIMESTAMPTZ  NOT NULL DEFAULT now(),
+  actualizado_end     timestamptz  NOT NULL DEFAULT now(),
   CONSTRAINT pk_tarjetas PRIMARY KEY (id),
   CONSTRAINT fk_tarjetas_usuarios FOREIGN KEY (usuario_id)
     REFERENCES secretos.usuarios (id) ON DELETE CASCADE,
@@ -139,6 +140,7 @@ CREATE TABLE secretos.tarjetas (
     REFERENCES secretos.tipos_tarjeta (id) ON DELETE RESTRICT,
   CONSTRAINT ck_tarjetas_ultimos_4_digitos CHECK (ultimos_4_digitos ~ '^[0-9]{4}$')
 );
+
 
 COMMENT ON TABLE secretos.tarjetas IS 'Tarjetas de crédito o débito almacenadas de forma cifrada por usuario.';
 COMMENT ON COLUMN secretos.tarjetas.id IS 'Identificador de la tarjeta.';

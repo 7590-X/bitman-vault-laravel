@@ -5,8 +5,13 @@
         <x-logins.index />
     </div>
 
+    {{-- VISTA: Tarjetas --}}
+    <div x-show="currentRoute === '#/tarjetas-credito'" class="h-full w-full" x-cloak>
+        <x-tarjetas.index />
+    </div>
+
     {{-- VISTAS EN DESARROLLO (Placeholder para otras opciones) --}}
-    <div x-show="currentRoute !== '#/logins'" class="h-full flex flex-col items-center justify-center text-center p-6">
+    <div x-show="currentRoute !== '#/logins' && currentRoute !== '#/tarjetas'" class="h-full flex flex-col items-center justify-center text-center p-6" x-cloak>
         <div class="bg-white p-10 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 border border-slate-200 max-w-lg w-full relative overflow-hidden group">
             <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-600 to-blue-400 opacity-80 group-hover:opacity-100 transition-opacity"></div>
 
