@@ -1,6 +1,22 @@
 <div x-data="indexTarjetaComponent"
-    @tarjeta-creada.window="creando = false; cargarTarjetas()"
-    @cancelar-creacion.window="creando = false"
+
+    @tarjeta-creada.window="
+        creando = false;
+        cargarTarjetas();"
+
+    @tarjeta-eliminada.window="
+        const tarjetaId = $event.detail;
+        tarjetas = tarjetas.filter(t => t.id !== tarjetaId);
+        tarjetaSeleccionada = null;
+        mostrandoDetalle = false;"
+
+    @cancelar-creacion.window="
+        creando = false"
+
+    @cerrar-detalle.window="
+        mostrandoDetalle = false;
+        tarjetaSeleccionada = null"
+
     class="h-full w-full bg-slate-900 overflow-y-auto p-6 lg:p-10">
 
     <div class="max-w-7xl mx-auto">
@@ -29,8 +45,15 @@
                 </div>
             </template>
 
+            {{-- Panel Izquierdo: Detalle de Tarjeta (Visible solo al seleccionar) --}}
+            <template x-if="mostrandoDetalle && tarjetaSeleccionada">
+                <div class="w-full lg:w-[45%] shrink-0 transition-all duration-300">
+                    <x-tarjetas.detalle />
+                </div>
+            </template>
+
             {{-- Panel Derecho / Completo: Tarjetas --}}
-            <div class="w-full transition-all duration-300" :class="creando ? 'lg:w-[55%]' : 'lg:w-full'">
+            <div class="w-full transition-all duration-300" :class="(creando || mostrandoDetalle) ? 'lg:w-[55%]' : 'lg:w-full'">
 
                 {{-- Estado de Carga --}}
                 <template x-if="cargando">
@@ -56,7 +79,7 @@
 
                 {{-- Grid de Tarjetas --}}
                 <template x-if="!cargando && tarjetas.length > 0">
-                    <div class="grid gap-6 transition-all duration-300" :class="creando ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-1' : 'grid-cols-1 md:grid-cols-2 xl:grid-cols-3'">
+                    <div class="grid gap-6 transition-all duration-300" :class="(creando || mostrandoDetalle) ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-1' : 'grid-cols-1 md:grid-cols-2 xl:grid-cols-3'">
                         <template x-for="tarjeta in tarjetas" :key="tarjeta.id">
                             <x-tarjetas.item alpineObject="tarjeta" @click="seleccionarTarjeta(tarjeta)" />
                         </template>
@@ -78,6 +101,7 @@
             error: null,
             tarjetaSeleccionada: null,
             creando: false,
+            mostrandoDetalle: false,
             editando: false,
 
             async init() {
@@ -86,12 +110,14 @@
 
             iniciarCreacion() {
                 this.creando = true;
+                this.mostrandoDetalle = false;
+                this.tarjetaSeleccionada = null;
             },
 
             seleccionarTarjeta(tarjeta) {
                 this.tarjetaSeleccionada = tarjeta;
-                this.editando = true;
-                // Lógica futura para abrir modal/panel de detalle/edición
+                this.mostrandoDetalle = true;
+                this.creando = false;
             },
 
             formatearFecha(fechaStr) {
