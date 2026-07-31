@@ -1,7 +1,7 @@
-<div x-data="indexTarjetaComponent" 
-     @tarjeta-creada.window="creando = false; cargarTarjetas()" 
-     @cancelar-creacion.window="creando = false"
-     class="h-full w-full bg-slate-900 overflow-y-auto p-6 lg:p-10">
+<div x-data="indexTarjetaComponent"
+    @tarjeta-creada.window="creando = false; cargarTarjetas()"
+    @cancelar-creacion.window="creando = false"
+    class="h-full w-full bg-slate-900 overflow-y-auto p-6 lg:p-10">
 
     <div class="max-w-7xl mx-auto">
         {{-- Encabezado --}}
@@ -13,27 +13,25 @@
                 </h2>
                 <p class="text-slate-400 mt-1 text-sm">Gestiona tus tarjetas de forma segura en tu bóveda personal.</p>
             </div>
-            <button
-                @click="iniciarCreacion()"
-                class="inline-flex items-center justify-center gap-2 py-2.5 px-5 bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white font-medium text-sm rounded-xl transition-all duration-200 shadow-lg shadow-blue-900/20 focus:outline-none focus:ring-2 focus:ring-blue-500/50">
-                <svg class="w-5 h-5 stroke-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
-                </svg>
+            <x-share.button @click="iniciarCreacion()" variante="primary">
+                <x-icon.plus class="w-5 h-5" />
                 <span>Nueva Tarjeta</span>
-            </button>
+            </x-share.button>
         </div>
 
         {{-- Contenedor de Vistas (Grid vs Split) --}}
         <div class="flex flex-col lg:flex-row gap-8 items-start">
-            
+
             {{-- Panel Izquierdo: Formulario de Creación (Visible solo al crear) --}}
-            <div x-show="creando" class="w-full lg:w-[45%] shrink-0 transition-all duration-300" x-cloak>
-                <x-tarjetas.formulario-crear />
-            </div>
+            <template x-if="creando">
+                <div class="w-full lg:w-[45%] shrink-0 transition-all duration-300">
+                    <x-tarjetas.formulario-crear />
+                </div>
+            </template>
 
             {{-- Panel Derecho / Completo: Tarjetas --}}
             <div class="w-full transition-all duration-300" :class="creando ? 'lg:w-[55%]' : 'lg:w-full'">
-                
+
                 {{-- Estado de Carga --}}
                 <template x-if="cargando">
                     <div class="flex flex-col items-center justify-center py-20 text-slate-400">
@@ -64,7 +62,7 @@
                         </template>
                     </div>
                 </template>
-                
+
             </div>
         </div>
     </div>
@@ -88,7 +86,6 @@
 
             iniciarCreacion() {
                 this.creando = true;
-                // Lógica futura para abrir modal/panel de creación
             },
 
             seleccionarTarjeta(tarjeta) {

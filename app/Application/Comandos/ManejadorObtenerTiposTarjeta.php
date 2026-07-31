@@ -8,6 +8,7 @@ namespace App\Application\Comandos;
 
 use App\Domain\Entidades\TipoTarjeta;
 use App\Domain\Puertos\RepositorioTipoTarjeta;
+use Illuminate\Support\Facades\Log;
 
 final class ManejadorObtenerTiposTarjeta
 {
@@ -22,6 +23,7 @@ final class ManejadorObtenerTiposTarjeta
      */
     public function manejar(): array
     {
+        Log::info('Ejecutando consulta para obtener catálogo de tipos de tarjeta.');
         return $this->repositorioTipoTarjeta->obtenerTodos();
     }
 }

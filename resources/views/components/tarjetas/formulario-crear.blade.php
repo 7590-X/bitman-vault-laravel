@@ -68,8 +68,7 @@
                 </div>
             </div>
         </div>
-
-        {{-- Controles Adicionales (Tipo de tarjeta) --}}
+        {{-- Tipos de Tarjetas --}}
         <div>
             <label class="block text-sm font-medium text-slate-300 mb-1">Tipo de Tarjeta</label>
             <select x-model="formulario.tipo_tarjeta_id" required class="w-full bg-slate-900 border border-slate-700 rounded-lg text-slate-200 px-4 py-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
@@ -101,12 +100,14 @@
 @push('scripts')
 <script>
     document.addEventListener('alpine:init', () => {
+        let cacheTiposTarjeta = null;
+
         Alpine.data('crearTarjetaForm', () => ({
             guardando: false,
             error: null,
             tiposTarjeta: [],
             formulario: {
-                tipo_tarjeta_id: 1,
+                tipo_tarjeta_id: '',
                 alias: '',
                 numero_parte1: '',
                 numero_parte2: '',
@@ -119,6 +120,15 @@
             },
 
             async init() {
+                // Si ya fue cargado previamente, usar la memoria en caché y evitar la petición HTTP
+                if (cacheTiposTarjeta) {
+                    this.tiposTarjeta = cacheTiposTarjeta;
+                    if (this.tiposTarjeta.length > 0) {
+                        this.formulario.tipo_tarjeta_id = this.tiposTarjeta[0].id;
+                    }
+                    return;
+                }
+
                 try {
                     const token = localStorage.getItem('jwt_token');
                     const response = await fetch('/api/catalogos/tipos-tarjeta', {
@@ -129,13 +139,14 @@
                     });
                     if (response.ok) {
                         const json = await response.json();
-                        this.tiposTarjeta = json.datos;
+                        cacheTiposTarjeta = json.datos;
+                        this.tiposTarjeta = cacheTiposTarjeta;
                         if (this.tiposTarjeta.length > 0) {
                             this.formulario.tipo_tarjeta_id = this.tiposTarjeta[0].id;
                         }
                     }
                 } catch (e) {
-                    console.error('Error cargando tipos de tarjeta', e);
+                    console.error('Error al cargar catálogo de tipos de tarjeta', e);
                 }
             },
 
@@ -200,7 +211,7 @@
                         const json = await response.json();
                         // Reiniciar formulario
                         this.formulario = {
-                            tipo_tarjeta_id: 1,
+                            tipo_tarjeta_id: this.tiposTarjeta.length > 0 ? this.tiposTarjeta[0].id : '',
                             alias: '',
                             numero_parte1: '',
                             numero_parte2: '',
@@ -212,7 +223,7 @@
                             banco_emisor: ''
                         };
 
-                        // Despachar evento para que el index actualice
+                        // Disparar evento para que el index actualice
                         this.$dispatch('tarjeta-creada', json.datos);
                     } else {
                         const errorData = await response.json();

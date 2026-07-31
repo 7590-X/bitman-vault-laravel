@@ -31,5 +31,5 @@ default => 'bg-blue-600 hover:bg-blue-500 text-white font-semibold',
         <div class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
     </template>
     @endif
-    <span>{{ $slot }}</span>
+    {{ $slot }}
 </button>
