@@ -18,10 +18,6 @@
         const eliminadoId = $event.detail
         logins = logins.filter(l => l.id !== eliminadoId)"
 
-    @login-form-cerrado="
-        cancelarCreacion()
-    "
-
     class="h-full w-full flex border border-slate-800 bg-slate-900 overflow-hidden shadow-xl">
 
     {{-- Panel Izquierdo: Lista de Logins (Componente Independiente) --}}
@@ -85,17 +81,14 @@
                 this.editando = false;
             },
 
-            cancelarCreacion() {
+            cancelar() {
                 this.creando = false;
+                this.editando = false;
             },
 
             iniciarEdicion() {
                 this.editando = true;
                 this.creando = false;
-            },
-
-            cancelarEdicion() {
-                this.editando = false;
             },
 
             seleccionarLogin(login) {

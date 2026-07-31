@@ -2,15 +2,9 @@ import Alpine from 'alpinejs';
 window.Alpine = Alpine;
 Alpine.start();
 
-import jQuery from 'jquery';
-window.$ = jQuery;
-window.jQuery = jQuery;
-
 import toastr from 'toastr';
 import 'toastr/build/toastr.min.css';
 
-import { LoginEvents } from './events/events-login.js';
-window.LoginEvents = LoginEvents;
 
 import { Dialog } from './dialog.js';
 window.Dialog = Dialog;
@@ -19,7 +13,7 @@ window.Dialog = Dialog;
 toastr.options = {
     "closeButton": true,
     "progressBar": true,
-    "positionClass": "toast-bottom-right", // O toast-top-right, lo que prefieras
+    "positionClass": "toast-top-right", // O toast-top-right, lo que prefieras
     "timeOut": "3000",
 };
 

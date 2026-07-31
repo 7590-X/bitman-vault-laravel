@@ -70,7 +70,7 @@
         }
         document.addEventListener('DOMContentLoaded', loadUserInfo);
     </script>
-
+    <!-- Aqui se inyectan los scripts de los componentes XD -->
     @stack('scripts')
 </body>
 

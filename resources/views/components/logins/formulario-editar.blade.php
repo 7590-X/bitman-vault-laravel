@@ -4,7 +4,7 @@
     Utiliza los componentes compartidos estandarizados en <x-share.*>.
 --}}
 <div
-    x-data="editarLoginComponent()"
+    x-data="LoginsFormularioEditarComponent"
     class="h-full flex flex-col max-w-xl min-h-0">
     {{-- ─── Encabezado del Formulario ──────────────────────────────────────── --}}
     <x-share.panel-header
@@ -66,7 +66,7 @@
         <x-share.button
             variante="secondary"
             tipo="button"
-            @click="cancelarEdicion()"
+            @click="cancelar()"
             cargando="enviando">
             Cancelar
         </x-share.button>
@@ -82,7 +82,7 @@
 @push('scripts')
 <script>
     document.addEventListener('alpine:init', () => {
-        Alpine.data('editarLoginComponent', () => ({
+        Alpine.data('LoginsFormularioEditarComponent', () => ({
             enviando: false,
             mostrarPassword: false,
             errores: {},
@@ -144,7 +144,7 @@
 
                     if (response.ok || response.status === 200) {
                         window.toastr.success('Login actualizado exitosamente', 'Actualizado')
-                        this.$dispatch(LoginEvents.MODIFICADO, json.datos);
+                        this.$dispatch('login-actualizado', json.datos);
                     } else if (response.status === 422) {
                         this.errores = json.errors || {};
                         this.errorGeneral = json.message || 'Corrige los errores del formulario.';
