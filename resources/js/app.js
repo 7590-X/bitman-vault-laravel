@@ -12,6 +12,9 @@ import 'toastr/build/toastr.min.css';
 import { LoginEvents } from './events/events-login.js';
 window.LoginEvents = LoginEvents;
 
+import { Dialog } from './dialog.js';
+window.Dialog = Dialog;
+
 // Configuración global de Toastr para mantener consistencia en todo el proyecto
 toastr.options = {
     "closeButton": true,

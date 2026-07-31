@@ -59,7 +59,7 @@
         <x-share.button
             variante="danger"
             tipo="button"
-            @click="eliminarLogin()">
+            @click="confirmarEliminacion()">
             Eliminar
         </x-share.button>
         <x-share.button
@@ -74,6 +74,18 @@
 <script>
     document.addEventListener('alpine:init', () => {
         Alpine.data('detalleLoginComponent', () => ({
+            async confirmarEliminacion() {
+                const result = await window.Dialog.confirm({
+                    title: `¿Eliminar ${this.loginSeleccionado?.nombre_sitio}?`,
+                    text: '¿Estás seguro de que deseas eliminar este registro? Esta acción no se puede deshacer y los datos se perderán de forma permanente.',
+                    confirmText: 'Sí, eliminar',
+                    type: 'danger'
+                });
+
+                if (result.isConfirmed) {
+                    this.eliminarLogin();
+                }
+            },
             async eliminarLogin() {
                 const token = localStorage.getItem('jwt_token');
                 try {
