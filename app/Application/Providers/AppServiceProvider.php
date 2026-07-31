@@ -39,6 +39,11 @@ class AppServiceProvider extends ServiceProvider
             \App\Domain\Puertos\RepositorioTarjeta::class,
             \App\Infrastructure\Repositorios\RepositorioTarjetaEloquent::class
         );
+
+        $this->app->bind(
+            \App\Domain\Puertos\RepositorioTipoTarjeta::class,
+            \App\Infrastructure\Repositorios\RepositorioTipoTarjetaEloquent::class
+        );
     }
 
     /**

@@ -34,6 +34,10 @@ Route::middleware('jwt.auth')->group(function () {
             ->name('api.auth.me');
     });
 
+    Route::prefix('catalogos')->group(function () {
+        Route::get('tipos-tarjeta',           [\App\Presentation\Http\Controllers\ControladorCatalogo::class, 'obtenerTiposTarjeta']);
+    });
+
     Route::apiResource('logins', ControladorLogin::class)->except(['show']);
     Route::apiResource('tarjetas', App\Presentation\Http\Controllers\ControladorTarjeta::class)->except(['show']);
 });
