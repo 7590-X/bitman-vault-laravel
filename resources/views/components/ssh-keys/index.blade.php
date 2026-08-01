@@ -47,12 +47,9 @@
             </template>
         </div>
 
-        {{-- Modo Detalle: Despliega los datos de la llave seleccionada (Placeholder) --}}
+        {{-- Modo Detalle: Despliega los datos de la llave seleccionada --}}
         <template x-if="!creando && !editando && llaveSeleccionada">
-            <div class="h-full flex flex-col items-center justify-center text-center p-8 bg-slate-900 rounded-xl border border-slate-700/50 border-dashed">
-                <h3 class="text-lg font-medium text-slate-200" x-text="'Detalles de: ' + llaveSeleccionada.nombre"></h3>
-                <p class="text-sm text-slate-400 mt-2">La vista de detalle para esta llave SSH está en construcción.</p>
-            </div>
+            <x-ssh-keys.detalle />
         </template>
 
         {{-- Modo Vacío: Cuando no hay selección activa --}}
