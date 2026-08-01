@@ -3,7 +3,9 @@
     Se despliega dentro del panel derecho del dashboard.
     Utiliza los componentes compartidos estandarizados en <x-share.*>.
 --}}
-<div x-data="SshKeysFormularioCrearComponent" class="h-full flex flex-col max-w-xl min-h-0">
+<div x-data="SshKeysFormularioCrearComponent" 
+     @ssh-key-generada.window="asignarLlavesGeneradas($event.detail)"
+     class="h-full flex flex-col max-w-xl min-h-0">
 
     {{-- ─── Encabezado del Formulario ──────────────────────────────────────── --}}
     <x-share.panel-header
@@ -125,8 +127,13 @@
             },
 
             generarNueva() {
-                // Funcionalidad no implementada por ahora
-                window.toastr.info('La funcionalidad de generar nueva llave SSH estará disponible próximamente.', 'Próximamente');
+                this.$dispatch('abrir-generador-ssh');
+            },
+
+            asignarLlavesGeneradas(detalle) {
+                this.form.llave_publica = detalle.publicKeyOpenSSH;
+                this.form.llave_privada_encriptada = detalle.privateKeyPem;
+                this.form.frase_paso_encriptada = detalle.passphrase || '';
             },
 
             async guardar() {

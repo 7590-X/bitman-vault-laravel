@@ -18,6 +18,20 @@
         const eliminadoId = $event.detail
         llaves = llaves.filter(l => l.id !== eliminadoId)"
 
+    @abrir-generador-ssh.window="
+        creando = false;
+        editando = false;
+        generando = true;
+        llaveSeleccionada = null;"
+
+    @cerrar-generador-ssh.window="
+        generando = false;
+        creando = true;"
+
+    @ssh-key-generada.window="
+        generando = false;
+        creando = true;"
+
     class="h-full w-full flex border border-slate-800 bg-slate-900 overflow-hidden shadow-xl">
 
     {{-- Panel Izquierdo: Lista de Llaves SSH (Componente Independiente) --}}
@@ -27,11 +41,16 @@
 
     {{-- Panel Derecho: Formulario de Creación O Detalle de la Llave Seleccionada --}}
     <div class="flex-1 h-full flex flex-col overflow-hidden p-6"
-        :class="(creando || editando) ? 'bg-slate-950' : 'bg-slate-950/60'">
+        :class="(creando || editando || generando) ? 'bg-slate-950' : 'bg-slate-950/60'">
 
         {{-- Modo Creación: Despliega el formulario embebido en el panel derecho --}}
         <div x-show="creando" class="h-full">
             <x-ssh-keys.formulario-crear />
+        </div>
+
+        {{-- Modo Generación: Despliega el generador de claves --}}
+        <div x-show="generando" class="h-full">
+            <x-ssh-keys.formulario-generar />
         </div>
 
         {{-- Modo Edición: Despliega el formulario de edición en el panel derecho (Placeholder) --}}
@@ -48,12 +67,12 @@
         </div>
 
         {{-- Modo Detalle: Despliega los datos de la llave seleccionada --}}
-        <template x-if="!creando && !editando && llaveSeleccionada">
+        <template x-if="!creando && !editando && !generando && llaveSeleccionada">
             <x-ssh-keys.detalle />
         </template>
 
         {{-- Modo Vacío: Cuando no hay selección activa --}}
-        <template x-if="!creando && !editando && !llaveSeleccionada && !cargando">
+        <template x-if="!creando && !editando && !generando && !llaveSeleccionada && !cargando">
             <div class="h-full flex flex-col items-center justify-center text-center p-8">
                 <div class="w-16 h-16 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-500 mb-4 shadow-inner">
                     <x-icon.vault class="w-8 h-8 opacity-40" />
@@ -76,6 +95,7 @@
             llaveSeleccionada: null,
             creando: false,
             editando: false,
+            generando: false,
             mensajeExito: null,
 
             async init() {
@@ -85,12 +105,14 @@
             iniciarCreacion() {
                 this.creando = true;
                 this.editando = false;
+                this.generando = false;
                 this.llaveSeleccionada = null; // Opcional: deseleccionar al crear
             },
 
             cancelar() {
                 this.creando = false;
                 this.editando = false;
+                this.generando = false;
                 // Si hay llaves, volvemos a seleccionar la primera si no había una seleccionada
                 if (this.llaves.length > 0 && !this.llaveSeleccionada) {
                     this.llaveSeleccionada = this.llaves[0];
@@ -100,10 +122,11 @@
             iniciarEdicion() {
                 this.editando = true;
                 this.creando = false;
+                this.generando = false;
             },
 
             seleccionarLlave(llave) {
-                if (this.creando || this.editando) {
+                if (this.creando || this.editando || this.generando) {
                     return;
                 }
                 this.llaveSeleccionada = llave;
