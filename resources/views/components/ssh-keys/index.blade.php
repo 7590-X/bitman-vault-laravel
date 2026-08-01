@@ -29,19 +29,9 @@
     <div class="flex-1 h-full flex flex-col overflow-hidden p-6"
         :class="(creando || editando) ? 'bg-slate-950' : 'bg-slate-950/60'">
 
-        {{-- Modo Creación: Despliega el formulario embebido en el panel derecho (Placeholder) --}}
+        {{-- Modo Creación: Despliega el formulario embebido en el panel derecho --}}
         <div x-show="creando" class="h-full">
-            <div class="h-full flex flex-col items-center justify-center text-center p-8 bg-slate-900 rounded-xl border border-slate-700/50 border-dashed">
-                <div class="w-16 h-16 rounded-full bg-slate-800/80 border border-slate-700 flex items-center justify-center text-blue-400 mb-4 shadow-inner">
-                    <x-icon.key class="w-8 h-8 opacity-80" />
-                </div>
-                <h3 class="text-lg font-medium text-slate-200">Nueva Llave SSH</h3>
-                <p class="text-sm text-slate-400 mt-2">El formulario para agregar una nueva llave SSH está en construcción.</p>
-                
-                <button type="button" @click="cancelar()" class="mt-6 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-sm font-medium transition-colors border border-slate-700">
-                    Cancelar
-                </button>
-            </div>
+            <x-ssh-keys.formulario-crear />
         </div>
 
         {{-- Modo Edición: Despliega el formulario de edición en el panel derecho (Placeholder) --}}
