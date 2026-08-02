@@ -2,18 +2,24 @@
     Componente reutilizable para mostrar un campo de dato en vistas de detalle.
 
     Props:
-      - etiqueta : string — Label del campo (requerido)
-      - oculto   : bool   — Oculta el valor con ••• y agrega toggle Ver/Ocultar (default: false)
-      - copiable : bool   — Muestra botón Copiar al portapapeles (default: false)
+      - etiqueta     : string      — Label del campo (requerido)
+      - oculto       : bool        — Oculta el valor con ••• y agrega toggle Ver/Ocultar (default: false)
+      - copiable     : bool        — Muestra botón Copiar al portapapeles (default: false)
+      - accionNombre : string|null — Texto o etiqueta para un botón de acción configurable (default: null)
+      - accionIcono  : string|null — Nombre del ícono para el botón configurable (ej: 'download') (default: null)
+      - accionClick  : string|null — Expresión o método Alpine a ejecutar al hacer click (default: null)
 
-    Slot (default):
-      El contenido del valor. Usar <span x-text="..."> para valores dinámicos Alpine.
-      El nodo siempre está en el DOM (oculto con CSS) para que el Clipboard API pueda leer el texto.
+    Slots:
+      - default  : El contenido del valor. Usar <span x-text="..."> para valores dinámicos Alpine.
+      - acciones : Slot opcional para botones de acción personalizados adicionales.
 --}}
 @props([
 'etiqueta' => '',
 'oculto' => false,
 'copiable' => false,
+'accionNombre' => null,
+'accionIcono' => null,
+'accionClick' => null,
 ])
 
 <div
@@ -39,6 +45,23 @@
         </span>
 
         <div class="flex items-center gap-1.5 shrink-0">
+
+            @if($accionNombre && $accionClick)
+            {{-- Botón Configurable --}}
+            <button
+                type="button"
+                @click="{{ $accionClick }}"
+                class="inline-flex items-center gap-1 text-xs font-medium text-slate-400 hover:text-slate-100 bg-slate-800 hover:bg-slate-700 border border-slate-700/60 rounded px-2 py-0.5 transition-colors select-none">
+                @if($accionIcono)
+                <x-dynamic-component :component="'icon.' . $accionIcono" class="w-3.5 h-3.5 shrink-0" />
+                @endif
+                <span>{{ $accionNombre }}</span>
+            </button>
+            @endif
+
+            @if(isset($acciones))
+            {{ $acciones }}
+            @endif
 
             @if($oculto)
             {{-- Botón: Ver / Ocultar --}}

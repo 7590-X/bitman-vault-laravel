@@ -21,12 +21,23 @@
     <div class="max-w-xl flex-1 overflow-y-auto min-h-0 px-8 py-6 space-y-3">
 
         {{-- Campo: Llave Pública --}}
-        <x-share.campo-detalle etiqueta="Llave Pública" :copiable="true">
+        <x-share.campo-detalle
+            etiqueta="Llave Pública"
+            :copiable="true"
+            accion-nombre="Descargar"
+            accion-icono="download"
+            accion-click="descargarLlave(llaveSeleccionada.llave_publica, (llaveSeleccionada.nombre || 'id_rsa') + '.pub')">
             <span x-text="llaveSeleccionada.llave_publica || '—'" class="break-all whitespace-pre-wrap font-mono text-xs text-slate-300"></span>
         </x-share.campo-detalle>
 
         {{-- Campo: Llave Privada --}}
-        <x-share.campo-detalle etiqueta="Llave Privada" :oculto="true" :copiable="true">
+        <x-share.campo-detalle
+            etiqueta="Llave Privada"
+            :oculto="true"
+            :copiable="true"
+            accion-nombre="Descargar"
+            accion-icono="download"
+            accion-click="descargarLlave(llaveSeleccionada.llave_privada_encriptada, llaveSeleccionada.nombre || 'id_rsa')">
             <span x-text="llaveSeleccionada.llave_privada_encriptada || '—'" class="break-all whitespace-pre-wrap font-mono text-xs"></span>
         </x-share.campo-detalle>
 
@@ -73,6 +84,23 @@
         Alpine.data('SshKeysDetalleComponent', () => ({
             enConstruccion() {
                 window.toastr.info('Esta funcionalidad estará disponible próximamente.', 'En Construcción');
+            },
+            descargarLlave(contenido, nombreArchivo) {
+                if (!contenido || contenido === '—') {
+                    window.toastr.warning('No hay contenido para descargar.', 'Advertencia');
+                    return;
+                }
+                const blob = new Blob([contenido], {
+                    type: 'text/plain;charset=utf-8'
+                });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = nombreArchivo.toLowerCase().replace(/\s+/g, '_') || 'id_rsa';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
             }
         }))
     })
