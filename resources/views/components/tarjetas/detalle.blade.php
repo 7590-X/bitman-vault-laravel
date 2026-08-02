@@ -23,7 +23,12 @@
         <div class="flex justify-between items-start z-10">
             <div>
                 <h4 class="text-lg font-semibold text-white tracking-wide truncate pr-4" x-text="tarjetaSeleccionada.alias || 'Tarjeta'"></h4>
-                <p class="text-xs text-slate-400 uppercase tracking-wider mt-1" x-text="tarjetaSeleccionada.banco_emisor || 'Banco'"></p>
+                <div class="flex items-center gap-2 mt-1">
+                    <p class="text-xs text-slate-400 uppercase tracking-wider" x-text="tarjetaSeleccionada.banco_emisor || 'Banco'"></p>
+                    <span x-show="franquiciaDetectada.clave !== 'desconocida'"
+                        x-text="franquiciaDetectada.nombre"
+                        class="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 border border-blue-500/40 uppercase tracking-wider"></span>
+                </div>
             </div>
             <div class="shrink-0 text-slate-300">
                 <x-icon.chip class="w-10 h-10 opacity-80" />
@@ -58,7 +63,24 @@
     <div class="space-y-3 pt-2">
         {{-- Número Completo de Tarjeta (Oculto + Copiable + Ver/Ocultar) --}}
         <x-share.campo-detalle etiqueta="Número Completo de Tarjeta" :oculto="true" :copiable="true">
-            <span x-text="atob(tarjetaSeleccionada.numero_encriptado)"></span>
+            <span x-text="numeroDesencriptado || '—'"></span>
+        </x-share.campo-detalle>
+
+        {{-- Verificación de Algoritmo Luhn --}}
+        <x-share.campo-detalle etiqueta="Verificación">
+            <template x-if="esLuhnValido === true">
+                <span class="text-xs font-semibold text-emerald-400 flex items-center gap-1.5">
+                    <x-icon.check class="w-4 h-4 shrink-0" /> Número Válido
+                </span>
+            </template>
+            <template x-if="esLuhnValido === false">
+                <span class="text-xs font-semibold text-red-400 flex items-center gap-1.5">
+                    <x-icon.x class="w-4 h-4 shrink-0" /> Número Inválido (Algoritmo de Luhn)
+                </span>
+            </template>
+            <template x-if="esLuhnValido === null">
+                <span class="text-xs text-slate-400">Sin verificar</span>
+            </template>
         </x-share.campo-detalle>
 
         {{-- Código CVV (Oculto + Copiable + Ver/Ocultar) --}}
@@ -81,6 +103,29 @@
 <script>
     document.addEventListener('alpine:init', () => {
         Alpine.data('detalleTarjetaComponent', () => ({
+            get numeroDesencriptado() {
+                if (!this.tarjetaSeleccionada?.numero_encriptado) return '';
+                try {
+                    return atob(this.tarjetaSeleccionada.numero_encriptado);
+                } catch (e) {
+                    return '';
+                }
+            },
+            get franquiciaDetectada() {
+                if (window.CardValidator && this.numeroDesencriptado) {
+                    return window.CardValidator.detectarFranquicia(this.numeroDesencriptado);
+                }
+                return {
+                    clave: 'desconocida',
+                    nombre: 'Tarjeta'
+                };
+            },
+            get esLuhnValido() {
+                if (window.CardValidator && this.numeroDesencriptado) {
+                    return window.CardValidator.validarLuhn(this.numeroDesencriptado);
+                }
+                return null;
+            },
             formatFecha(fechaStr) {
                 if (!fechaStr) return 'MM/YY';
                 const fecha = new Date(fechaStr);

@@ -30,8 +30,13 @@
                     <input type="text" x-model="formulario.alias" placeholder="Alias (Ej. Mi Tarjeta Platinum)" required maxlength="30"
                         class="w-full bg-transparent border-none text-white text-lg font-semibold placeholder:text-slate-400 focus:ring-0 p-0 focus:outline-none">
                     <label class="sr-only">Banco Emisor</label>
-                    <input type="text" x-model="formulario.banco_emisor" placeholder="Banco Emisor" maxlength="30"
-                        class="w-full bg-transparent border-none text-slate-300 text-xs uppercase tracking-wider placeholder:text-slate-500 focus:ring-0 p-0 mt-1 focus:outline-none">
+                    <div class="flex items-center gap-2 mt-1">
+                        <input type="text" x-model="formulario.banco_emisor" placeholder="Banco Emisor" maxlength="30"
+                            class="bg-transparent border-none text-slate-300 text-xs uppercase tracking-wider placeholder:text-slate-500 focus:ring-0 p-0 focus:outline-none">
+                        <span x-show="franquiciaDetectada.clave !== 'desconocida'"
+                              x-text="franquiciaDetectada.nombre"
+                              class="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 border border-blue-500/40 uppercase tracking-wider"></span>
+                    </div>
                 </div>
                 <div class="shrink-0 text-slate-300">
                     <x-icon.chip class="w-10 h-10 opacity-80" />
@@ -40,12 +45,28 @@
 
             {{-- Número de Tarjeta --}}
             <div class="mt-4">
-                <label class="text-[10px] text-slate-400 uppercase tracking-widest mb-1 block">Número de Tarjeta</label>
+                <div class="flex justify-between items-center mb-1">
+                    <label class="text-[10px] text-slate-400 uppercase tracking-widest block">Número de Tarjeta</label>
+                    <span x-show="estadoLuhn.valid === true" class="text-[10px] font-semibold text-emerald-400 flex items-center gap-1">
+                        <x-icon.check class="w-3 h-3" /> Válida (Luhn)
+                    </span>
+                    <span x-show="estadoLuhn.valid === false" class="text-[10px] font-semibold text-red-400 flex items-center gap-1">
+                        Inválida (Luhn)
+                    </span>
+                </div>
                 <div class="flex gap-2">
-                    <input type="text" x-model="formulario.numero_parte1" @input="formatNumber($event, 4, 'numero_parte2')" maxlength="4" placeholder="••••" required class="w-1/4 bg-slate-800/50 border border-slate-600/50 rounded-md text-center text-white font-mono text-lg tracking-widest focus:ring-1 focus:ring-blue-500 focus:border-blue-500 px-1 py-1.5 transition-colors">
-                    <input type="text" x-model="formulario.numero_parte2" x-ref="numero_parte2" @input="formatNumber($event, 4, 'numero_parte3')" maxlength="4" placeholder="••••" required class="w-1/4 bg-slate-800/50 border border-slate-600/50 rounded-md text-center text-white font-mono text-lg tracking-widest focus:ring-1 focus:ring-blue-500 focus:border-blue-500 px-1 py-1.5 transition-colors">
-                    <input type="text" x-model="formulario.numero_parte3" x-ref="numero_parte3" @input="formatNumber($event, 4, 'numero_parte4')" maxlength="4" placeholder="••••" required class="w-1/4 bg-slate-800/50 border border-slate-600/50 rounded-md text-center text-white font-mono text-lg tracking-widest focus:ring-1 focus:ring-blue-500 focus:border-blue-500 px-1 py-1.5 transition-colors">
-                    <input type="text" x-model="formulario.numero_parte4" x-ref="numero_parte4" maxlength="4" placeholder="••••" required class="w-1/4 bg-slate-800/50 border border-slate-600/50 rounded-md text-center text-white font-mono text-lg tracking-widest focus:ring-1 focus:ring-blue-500 focus:border-blue-500 px-1 py-1.5 transition-colors">
+                    <input type="text" x-model="formulario.numero_parte1" @input="formatNumber($event, 4, 'numero_parte2')" maxlength="4" placeholder="••••" required
+                        :class="estadoLuhn.valid === true ? 'border-emerald-500/80 focus:ring-emerald-500' : (estadoLuhn.valid === false ? 'border-red-500/80 focus:ring-red-500' : 'border-slate-600/50 focus:ring-blue-500')"
+                        class="w-1/4 bg-slate-800/50 border rounded-md text-center text-white font-mono text-lg tracking-widest px-1 py-1.5 transition-colors">
+                    <input type="text" x-model="formulario.numero_parte2" x-ref="numero_parte2" @input="formatNumber($event, 4, 'numero_parte3')" maxlength="4" placeholder="••••" required
+                        :class="estadoLuhn.valid === true ? 'border-emerald-500/80 focus:ring-emerald-500' : (estadoLuhn.valid === false ? 'border-red-500/80 focus:ring-red-500' : 'border-slate-600/50 focus:ring-blue-500')"
+                        class="w-1/4 bg-slate-800/50 border rounded-md text-center text-white font-mono text-lg tracking-widest px-1 py-1.5 transition-colors">
+                    <input type="text" x-model="formulario.numero_parte3" x-ref="numero_parte3" @input="formatNumber($event, 4, 'numero_parte4')" maxlength="4" placeholder="••••" required
+                        :class="estadoLuhn.valid === true ? 'border-emerald-500/80 focus:ring-emerald-500' : (estadoLuhn.valid === false ? 'border-red-500/80 focus:ring-red-500' : 'border-slate-600/50 focus:ring-blue-500')"
+                        class="w-1/4 bg-slate-800/50 border rounded-md text-center text-white font-mono text-lg tracking-widest px-1 py-1.5 transition-colors">
+                    <input type="text" x-model="formulario.numero_parte4" x-ref="numero_parte4" maxlength="4" placeholder="••••" required
+                        :class="estadoLuhn.valid === true ? 'border-emerald-500/80 focus:ring-emerald-500' : (estadoLuhn.valid === false ? 'border-red-500/80 focus:ring-red-500' : 'border-slate-600/50 focus:ring-blue-500')"
+                        class="w-1/4 bg-slate-800/50 border rounded-md text-center text-white font-mono text-lg tracking-widest px-1 py-1.5 transition-colors">
                 </div>
             </div>
 
@@ -119,8 +140,27 @@
                 banco_emisor: ''
             },
 
+            get numeroCompleto() {
+                return `${this.formulario.numero_parte1 || ''}${this.formulario.numero_parte2 || ''}${this.formulario.numero_parte3 || ''}${this.formulario.numero_parte4 || ''}`.trim();
+            },
+
+            get franquiciaDetectada() {
+                if (window.CardValidator && this.numeroCompleto) {
+                    return window.CardValidator.detectarFranquicia(this.numeroCompleto);
+                }
+                return { clave: 'desconocida', nombre: 'Tarjeta' };
+            },
+
+            get estadoLuhn() {
+                const num = this.numeroCompleto;
+                if (!num || num.length < 13) {
+                    return { valid: null };
+                }
+                const valid = window.CardValidator ? window.CardValidator.validarLuhn(num) : true;
+                return { valid };
+            },
+
             async init() {
-                // Si ya fue cargado previamente, usar la memoria en caché y evitar la petición HTTP
                 if (cacheTiposTarjeta) {
                     this.tiposTarjeta = cacheTiposTarjeta;
                     if (this.tiposTarjeta.length > 0) {
@@ -153,7 +193,7 @@
             formatNumber(e, maxLen, nextRefName) {
                 let val = e.target.value.replace(/\D/g, '');
                 e.target.value = val;
-                this.formulario[e.target.dataset.model] = val; // Sync model si necesario (alpine maneja x-model usualmente, esto es fallback)
+                this.formulario[e.target.dataset.model] = val;
 
                 if (val.length === maxLen && nextRefName && this.$refs[nextRefName]) {
                     this.$refs[nextRefName].focus();
@@ -170,30 +210,49 @@
             },
 
             async guardar() {
-                this.guardando = true;
                 this.error = null;
-                const token = localStorage.getItem('jwt_token');
 
-                // Procesar datos para el payload
-                const numeroCompleto = `${this.formulario.numero_parte1}${this.formulario.numero_parte2}${this.formulario.numero_parte3}${this.formulario.numero_parte4}`;
+                const numeroCompleto = this.numeroCompleto;
+                if (window.CardValidator && !window.CardValidator.validarLuhn(numeroCompleto)) {
+                    this.error = 'El número de tarjeta ingresado es inválido según el algoritmo de verificación de Luhn.';
+                    if (window.toastr) window.toastr.error(this.error, 'Número Inválido');
+                    return;
+                }
+
+                this.guardando = true;
+                const token = localStorage.getItem('jwt_token');
                 const ultimos4 = this.formulario.numero_parte4.padStart(4, '*').slice(-4);
 
-                // Procesar fecha MM/YY -> YYYY-MM-DD
                 let fechaSql = null;
                 if (this.formulario.fecha_expiracion_visual.length === 5) {
                     const [mes, anio] = this.formulario.fecha_expiracion_visual.split('/');
                     fechaSql = `20${anio}-${mes}-01`;
                 }
 
+                // Construir banco_emisor concatenando la franquicia detectada
+                const bancoTxt = (this.formulario.banco_emisor || '').trim();
+                const franquiciaTxt = this.franquiciaDetectada?.nombre;
+                let bancoEmisorFinal = bancoTxt;
+
+                if (franquiciaTxt && franquiciaTxt !== 'Tarjeta') {
+                    if (bancoTxt) {
+                        if (!bancoTxt.toLowerCase().includes(franquiciaTxt.toLowerCase())) {
+                            bancoEmisorFinal = `${bancoTxt} - ${franquiciaTxt}`;
+                        }
+                    } else {
+                        bancoEmisorFinal = franquiciaTxt;
+                    }
+                }
+
                 const payload = {
                     tipo_tarjeta_id: parseInt(this.formulario.tipo_tarjeta_id),
                     alias: this.formulario.alias,
-                    numero_encriptado: btoa(numeroCompleto), // Encriptación simulada básica para envío
+                    numero_encriptado: btoa(numeroCompleto),
                     ultimos_4_digitos: ultimos4,
                     nombre_titular: this.formulario.nombre_titular.toUpperCase(),
                     fecha_expiracion: fechaSql,
                     cvv_encriptado: btoa(this.formulario.cvv),
-                    banco_emisor: this.formulario.banco_emisor
+                    banco_emisor: bancoEmisorFinal
                 };
 
                 try {
@@ -209,7 +268,6 @@
 
                     if (response.ok) {
                         const json = await response.json();
-                        // Reiniciar formulario
                         this.formulario = {
                             tipo_tarjeta_id: this.tiposTarjeta.length > 0 ? this.tiposTarjeta[0].id : '',
                             alias: '',
@@ -223,7 +281,6 @@
                             banco_emisor: ''
                         };
 
-                        // Disparar evento para que el index actualice
                         this.$dispatch('tarjeta-creada', json.datos);
                     } else {
                         const errorData = await response.json();

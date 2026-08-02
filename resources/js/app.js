@@ -12,6 +12,9 @@ window.Dialog = Dialog;
 import { SSHKeyGeneratorService } from './ssh/ssh-generator.js';
 window.SSHKeyGenerator = SSHKeyGeneratorService;
 
+import { CardValidator } from './tarjetas/card-validator.js';
+window.CardValidator = CardValidator;
+
 // Configuración global de Toastr para mantener consistencia en todo el proyecto
 toastr.options = {
     "closeButton": true,
