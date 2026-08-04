@@ -59,6 +59,16 @@ class AppServiceProvider extends ServiceProvider
             \App\Domain\Puertos\ServicioNotificacionMfa::class,
             \App\Infrastructure\Servicios\ServicioNotificacionMfaLog::class
         );
+
+        $this->app->bind(
+            \App\Domain\Puertos\RepositorioEnvioNotaSegura::class,
+            \App\Infrastructure\Repositorios\RepositorioEnvioNotaSeguraEloquent::class
+        );
+
+        $this->app->bind(
+            \App\Domain\Puertos\ServicioNotificacionCorreoNota::class,
+            \App\Infrastructure\Servicios\ServicioNotificacionCorreoNotaLog::class
+        );
     }
 
     /**

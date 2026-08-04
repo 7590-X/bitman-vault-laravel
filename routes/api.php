@@ -48,4 +48,8 @@ Route::middleware('jwt.auth')->group(function () {
     Route::apiResource('logins', ControladorLogin::class)->except(['show']);
     Route::apiResource('tarjetas', App\Presentation\Http\Controllers\ControladorTarjeta::class)->except(['show']);
     Route::apiResource('llaves-ssh', App\Presentation\Http\Controllers\ControladorLlaveSsh::class)->except(['show', 'update']);
+    Route::apiResource('enviar-notas', App\Presentation\Http\Controllers\ControladorEnvioNotaSegura::class)->except(['show', 'update']);
 });
+
+// Ruta de apertura de nota (con token y código de verificación)
+Route::post('enviar-notas/aperturar/{token}', [App\Presentation\Http\Controllers\ControladorEnvioNotaSegura::class, 'aperturar']);

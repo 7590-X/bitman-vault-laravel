@@ -21,8 +21,15 @@
         </div>
     </template>
 
+    {{-- VISTA: Enviar Notas Seguras --}}
+    <template x-if="currentRoute === '#/enviar-notas'">
+        <div class="h-full w-full">
+            <x-enviar-notas.index />
+        </div>
+    </template>
+
     {{-- VISTAS EN DESARROLLO (Placeholder para otras opciones) --}}
-    <template x-if="currentRoute !== '#/logins' && currentRoute !== '#/tarjetas' && currentRoute !== '#/ssh-keys'">
+    <template x-if="currentRoute !== '#/logins' && currentRoute !== '#/tarjetas' && currentRoute !== '#/ssh-keys' && currentRoute !== '#/enviar-notas'">
         <div class="h-full flex flex-col items-center justify-center text-center p-6">
             <div class="bg-white p-10 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 border border-slate-200 max-w-lg w-full relative overflow-hidden group">
                 <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-600 to-blue-400 opacity-80 group-hover:opacity-100 transition-opacity"></div>
