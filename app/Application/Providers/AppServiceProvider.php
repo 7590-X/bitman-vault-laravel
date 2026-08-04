@@ -49,6 +49,16 @@ class AppServiceProvider extends ServiceProvider
             \App\Domain\Puertos\RepositorioLlaveSsh::class,
             \App\Infrastructure\Repositorios\RepositorioLlaveSshEloquent::class
         );
+
+        $this->app->bind(
+            \App\Domain\Puertos\RepositorioMfa::class,
+            \App\Infrastructure\Repositorios\RepositorioMfaEloquent::class
+        );
+
+        $this->app->bind(
+            \App\Domain\Puertos\ServicioNotificacionMfa::class,
+            \App\Infrastructure\Servicios\ServicioNotificacionMfaLog::class
+        );
     }
 
     /**
