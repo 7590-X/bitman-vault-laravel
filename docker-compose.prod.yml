@@ -1,0 +1,28 @@
+services:
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        image: bitman-laravel:latest
+        container_name: bitman-laravel
+        restart: always
+        ports:
+            - "${APP_PORT:-8888}:80"
+        env_file:
+            - .env
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
+        volumes:
+            - storage_data:/var/www/html/storage/app
+        networks:
+            - bitman-app-php_sail
+
+volumes:
+    storage_data:
+        driver: local
+
+networks:
+    default:
+        name: bitman-network
+    bitman-app-php_sail:
+        external: true
