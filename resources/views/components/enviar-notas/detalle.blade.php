@@ -22,8 +22,9 @@
 
         {{-- Estado --}}
         <x-share.campo-detalle etiqueta="Estado del Envío">
-            <div class="flex items-center gap-2">
+            <div class="flex items-center">
                 <x-share.badge
+                    :indicador="false"
                     :estado="'notaSeleccionada.estado'"
                     :etiqueta="'notaSeleccionada.estado_etiqueta'" />
             </div>
@@ -69,9 +70,7 @@
         {{-- Banner de Privacidad CIA (Regla 6) --}}
         <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 text-xs leading-relaxed space-y-2 mt-4">
             <div class="flex items-center gap-2 font-semibold text-slate-200">
-                <svg class="w-4 h-4 text-blue-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                </svg>
+                <x-icon.lock class="w-4 h-4 text-blue-400 shrink-0" />
                 <span>Privacidad de un solo uso (Cero Registro de Texto)</span>
             </div>
             <p class="text-slate-400">

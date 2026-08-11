@@ -7,29 +7,29 @@
       - indicador: bool — Si muestra el círculo indicador de estado (default: true)
 --}}
 @props([
-    'variante' => 'info',
-    'estado' => null,
-    'etiqueta' => null,
-    'indicador' => true,
+'variante' => 'info',
+'estado' => null,
+'etiqueta' => null,
+'indicador' => true,
 ])
 
 @php
 $clasesEstaticas = match($variante) {
-    'amber', 'warning', 'no_aperturada' => 'bg-amber-500/10 text-amber-400 border-amber-500/30',
-    'emerald', 'success', 'aperturada'  => 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
-    'rose', 'danger', 'expirada', 'revocada' => 'bg-rose-500/10 text-rose-400 border-rose-500/30',
-    'blue', 'info'                       => 'bg-blue-500/10 text-blue-400 border-blue-500/30',
-    'slate', 'secondary'                => 'bg-slate-800 text-slate-300 border-slate-700/80',
-    default                             => 'bg-blue-500/10 text-blue-400 border-blue-500/30',
+'amber', 'warning', 'no_aperturada' => 'bg-amber-500/10 text-amber-400 border-amber-500/30',
+'emerald', 'success', 'aperturada' => 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
+'rose', 'danger', 'expirada', 'revocada' => 'bg-rose-500/10 text-rose-400 border-rose-500/30',
+'blue', 'info' => 'bg-blue-500/10 text-blue-400 border-blue-500/30',
+'slate', 'secondary' => 'bg-slate-800 text-slate-300 border-slate-700/80',
+default => 'bg-blue-500/10 text-blue-400 border-blue-500/30',
 };
 
 $clasesPuntoEstaticas = match($variante) {
-    'amber', 'warning', 'no_aperturada' => 'bg-amber-400',
-    'emerald', 'success', 'aperturada'  => 'bg-emerald-400',
-    'rose', 'danger', 'expirada', 'revocada' => 'bg-rose-400',
-    'blue', 'info'                       => 'bg-blue-400',
-    'slate', 'secondary'                => 'bg-slate-400',
-    default                             => 'bg-blue-400',
+'amber', 'warning', 'no_aperturada' => 'bg-amber-400',
+'emerald', 'success', 'aperturada' => 'bg-emerald-400',
+'rose', 'danger', 'expirada', 'revocada' => 'bg-rose-400',
+'blue', 'info' => 'bg-blue-400',
+'slate', 'secondary' => 'bg-slate-400',
+default => 'bg-blue-400',
 };
 @endphp
 
@@ -45,11 +45,10 @@ $clasesPuntoEstaticas = match($variante) {
         'bg-blue-500/10 text-blue-400 border-blue-500/30': {{ $estado }} === 'info' || {{ $estado }} === 'blue',
         'bg-slate-800 text-slate-300 border-slate-700/80': {{ $estado }} === 'secondary' || {{ $estado }} === 'slate'
     }"
-    @endif
->
+    @endif>
     @if($indicador)
     <span
-        class="w-1.5 h-1.5 rounded-full mr-1.5 {{ $clasesPuntoEstaticas }}"
+        class="px-2 py-0.5 w-1.5 h-1.5 rounded-full mr-1.5 {{ $clasesPuntoEstaticas }}"
         @if($estado)
         :class="{
             'bg-amber-400': {{ $estado }} === 'no_aperturada' || {{ $estado }} === 'warning' || {{ $estado }} === 'amber',
@@ -58,13 +57,12 @@ $clasesPuntoEstaticas = match($variante) {
             'bg-blue-400': {{ $estado }} === 'info' || {{ $estado }} === 'blue',
             'bg-slate-400': {{ $estado }} === 'secondary' || {{ $estado }} === 'slate'
         }"
-        @endif
-    ></span>
+        @endif></span>
     @endif
 
     @if($etiqueta)
-        <span x-text="{{ $etiqueta }}"></span>
+    <span class="px-2 py-0.5 text-[10px] shrink-0 font-medium" x-text="{{ $etiqueta }}"></span>
     @else
-        {{ $slot }}
+    {{ $slot }}
     @endif
 </span>
