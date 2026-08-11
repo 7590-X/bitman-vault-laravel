@@ -23,22 +23,9 @@
         {{-- Estado --}}
         <x-share.campo-detalle etiqueta="Estado del Envío">
             <div class="flex items-center gap-2">
-                <span
-                    class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border"
-                    :class="{
-                        'bg-amber-500/10 text-amber-400 border-amber-500/30': notaSeleccionada.estado === 'no_aperturada',
-                        'bg-emerald-500/10 text-emerald-400 border-emerald-500/30': notaSeleccionada.estado === 'aperturada',
-                        'bg-rose-500/10 text-rose-400 border-rose-500/30': notaSeleccionada.estado === 'expirada' || notaSeleccionada.estado === 'revocada'
-                    }">
-                    <span class="w-1.5 h-1.5 rounded-full mr-1.5"
-                        :class="{
-                            'bg-amber-400': notaSeleccionada.estado === 'no_aperturada',
-                            'bg-emerald-400': notaSeleccionada.estado === 'aperturada',
-                            'bg-rose-400': notaSeleccionada.estado === 'expirada' || notaSeleccionada.estado === 'revocada'
-                        }">
-                    </span>
-                    <span x-text="notaSeleccionada.estado_etiqueta"></span>
-                </span>
+                <x-share.badge
+                    :estado="'notaSeleccionada.estado'"
+                    :etiqueta="'notaSeleccionada.estado_etiqueta'" />
             </div>
         </x-share.campo-detalle>
 

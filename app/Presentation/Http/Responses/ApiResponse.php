@@ -15,6 +15,7 @@ class ApiResponse
             'codigo'    => $codigo->value,
             'mensaje'   => $mensaje,
             'payload'   => $payload,
+            'datos'     => $payload,
             'timestamp' => now()->toIso8601String(),
         ], $codigo->value);
     }

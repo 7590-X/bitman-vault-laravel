@@ -56,12 +56,12 @@ class ControladorEnvioNotaSegura extends Controller
         $usuarioId = (int) auth('api')->id();
 
         $comando = new ComandoCrearEnvioNotaSegura(
-            usuarioId:                     $usuarioId,
-            titulo:                        $solicitud->validated('titulo'),
-            correoDestino:                 $solicitud->validated('correo_destino'),
-            textoNota:                     $solicitud->validated('texto_nota'),
-            codigoApertura:                $solicitud->validated('codigo_apertura'),
-            minutosExpiracion:             (int) ($solicitud->validated('minutos_expiracion') ?? 30),
+            usuarioId: $usuarioId,
+            titulo: $solicitud->validated('titulo'),
+            correoDestino: $solicitud->validated('correo_destino'),
+            textoNota: $solicitud->validated('texto_nota'),
+            codigoApertura: $solicitud->validated('codigo_apertura'),
+            minutosExpiracion: (int) ($solicitud->validated('minutos_expiracion') ?? 30),
             duracionVisualizacionSegundos: (int) ($solicitud->validated('duracion_visualizacion_segundos') ?? 30),
         );
 
@@ -126,7 +126,7 @@ class ControladorEnvioNotaSegura extends Controller
             'correo_destino'                  => $nota->obtenerCorreoDestino(),
             'codigo_apertura'                 => $nota->obtenerCodigoApertura(),
             'token_acceso'                    => $nota->obtenerTokenAcceso(),
-            'url_acceso'                      => url("/#/notas/aperturar/{$nota->obtenerTokenAcceso()}"),
+            'url_acceso'                      => url("/notas/aperturar/{$nota->obtenerTokenAcceso()}"),
             'estado'                          => $nota->obtenerEstado()->value,
             'estado_etiqueta'                 => $nota->obtenerEstado()->etiqueta(),
             'duracion_visualizacion_segundos' => $nota->obtenerDuracionVisualizacionSegundos(),

@@ -19,3 +19,8 @@ Route::post('/registro', [ControladorRegistro::class, 'registrar'])->name('regis
 Route::get('/login', function () {
     return view('auth.login');
 })->name('login');
+
+// Portal Público e Independiente para Lectura de Notas Seguras (Sin sesión / Sin Dashboard)
+Route::get('/notas/aperturar/{token}', function (string $token) {
+    return view('portal-nota.aperturar', ['token' => $token]);
+})->name('notas.aperturar');

@@ -13,5 +13,6 @@ enum HttpCode: int
     case UNAUTHORIZED = 401;
     case FORBIDDEN = 403;
     case NOT_FOUND = 404;
+    case GONE = 410;
     case INTERNAL_SERVER_ERROR = 500;
 }

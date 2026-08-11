@@ -73,14 +73,14 @@
                     <x-share.input
                         tipo="number"
                         min="5"
-                        max="300"
+                        max="1000"
                         nombre="duracion_visualizacion_segundos"
                         x-model.number="form.duracion_visualizacion_segundos" />
                 </x-share.form-field>
             </div>
 
             <div class="p-3 rounded-lg bg-blue-500/10 border border-blue-500/30 text-blue-300 text-xs">
-                <p>🔒 <strong>Seguridad CIA:</strong> Al enviar la nota, el texto será cifrado. Una vez que el destinatario ingrese el código y la lea, el contenido se borrará permanentemente de la base de datos.</p>
+                <p><strong>Seguridad CIA:</strong> Al enviar la nota, el texto será cifrado. Una vez que el destinatario ingrese el código y la lea, el contenido se borrará permanentemente de la base de datos.</p>
             </div>
 
         </div>

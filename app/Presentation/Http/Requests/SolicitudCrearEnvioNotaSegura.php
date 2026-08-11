@@ -23,7 +23,7 @@ class SolicitudCrearEnvioNotaSegura extends FormRequest
             'texto_nota'                      => 'required|string',
             'codigo_apertura'                 => 'nullable|string|max:50',
             'minutos_expiracion'              => 'nullable|integer|min:1|max:1440',
-            'duracion_visualizacion_segundos' => 'nullable|integer|min:5|max:300',
+            'duracion_visualizacion_segundos' => 'nullable|integer|min:5|max:1000',
         ];
     }
 

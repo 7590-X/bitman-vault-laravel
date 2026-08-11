@@ -55,15 +55,11 @@
                         <div class="min-w-0 flex-1">
                             <div class="flex items-center justify-between gap-1">
                                 <h4 class="text-sm font-semibold text-slate-100 truncate group-hover:text-white transition-colors" x-text="nota.titulo"></h4>
-                                <span
-                                    class="text-[10px] font-medium px-2 py-0.5 rounded-full border shrink-0"
-                                    :class="{
-                                        'bg-amber-500/10 text-amber-400 border-amber-500/30': nota.estado === 'no_aperturada',
-                                        'bg-emerald-500/10 text-emerald-400 border-emerald-500/30': nota.estado === 'aperturada',
-                                        'bg-rose-500/10 text-rose-400 border-rose-500/30': nota.estado === 'expirada' || nota.estado === 'revocada'
-                                    }"
-                                    x-text="nota.estado_etiqueta">
-                                </span>
+                                <x-share.badge
+                                    :estado="'nota.estado'"
+                                    :indicador="false"
+                                    class="text-[10px] px-2 py-0.5 shrink-0 font-medium"
+                                    :etiqueta="'nota.estado_etiqueta'" />
                             </div>
                             <p class="text-xs text-slate-400 truncate mt-0.5 font-sans" x-text="`Para: ${nota.correo_destino}`"></p>
                         </div>

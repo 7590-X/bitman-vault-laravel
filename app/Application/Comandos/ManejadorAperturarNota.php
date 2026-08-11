@@ -32,7 +32,7 @@ final class ManejadorAperturarNota
             throw new RuntimeException('Esta nota ha expirado y ya no se encuentra disponible.', 410);
         }
 
-        if (trim($nota->obtenerCodigoApertura()) !== trim($comando->codigoApertura)) {
+        if (strcasecmp(trim($nota->obtenerCodigoApertura()), trim($comando->codigoApertura)) !== 0) {
             throw new RuntimeException('El código de apertura ingresado es incorrecto.', 400);
         }
 
