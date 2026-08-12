@@ -11,11 +11,11 @@ on:
 jobs:
   cd:
     name: Continuous Deployment (VPS via SSH)
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/trunk')
+    if: github.event_name == 'push' && github.ref == 'refs/heads/trunk'
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Code || github.ref == 'refs/heads/trunk'
+      - name: Checkout Code
         uses: actions/checkout@v4
 
       - name: Deploy to VPS via SSH
@@ -27,42 +27,43 @@ jobs:
           port: ${{ secrets.PORT }}
           script_stop: true
           script: |
-            DEPLOY_DIR="/home/github/desploy"
+            DEPLOY_DIR="/home/github/deploy/"${{ github.repository }}
 
             echo "==> Verificar directorio de despliegue"
-            if [ ! -d  $DEPLOY_DIR ]; then
+            if [ ! -d "$DEPLOY_DIR" ]; then
               echo "==> Creando directorio de despliegue"
-              mkdir -p $DEPLOY_DIR
+              mkdir -p "$DEPLOY_DIR"
             else
-              echo "==> Directorio de  despliegue ya existe"
+              echo "==> Directorio de despliegue ya existe"
             fi
 
-            cd $DEPLOY_DIR
+            cd "$DEPLOY_DIR"
 
             echo "==> Verificando estado de repositorio"
-            if [ ! -d ${{ github.repository }} ]; then
+            if [ ! -d ".git" ]; then
               echo "==> Clonando repositorio completo"
-              git clone https://github.com/${{ github.repositorio }}.git .
+              cd ../
+              git clone https://github.com/${{ github.repository }}.git .
             else
               echo "==> Sincronizando repositorio"
-              cd ${{ github.repository }}
               git fetch origin
               git reset --hard origin/trunk
-              cd ../
             fi
+
+            REPO=${{ github.repository }}
+            FILE="${REPO//\//_}"
+            ENV="/home/github/deploy/env/${FILE}"
+            
+            cd ../
 
             echo "==> Verificando archivo de entorno .env..."
-            if [ ! -f ${{ github.repository }}"/.env" ]; then
-              if [ -f ${{ github.repository }} ]; then
-                cp ${{ github.repository }} .env
-                echo "==> Archivo de configuraciones ENV copiado"
-              else
-                echo "==> No se enontro un archivo de variables de entorno para configurar el entorno"
-                return 1
-              fi
+            if [ -f "$ENV" ]; then
+              cp "$ENV" "$REPO/.env"
+              echo "==> Archivo de configuraciones copiado."  
+            else
+              echo "==> No se encontro el archivo de configuraciones $ENV"
+              return 1
             fi
-
-            cd ${{ github.repository }}
 
             echo "==> Construyendo y desplegando contenedores Docker..."
             docker compose -f docker-compose.prod.yml up --build -d
