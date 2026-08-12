@@ -28,7 +28,7 @@ jobs:
           script_stop: true
           script: |
             echo "==> Accediendo al directorio de despliegue..."
-            DEPLOY_DIR="/home/github/deploy"
+            DEPLOY_DIR="/home/github/deploy/bitman_vault_php"
             mkdir -p $DEPLOY_DIR
             cd $DEPLOY_DIR
 
@@ -42,8 +42,8 @@ jobs:
 
             echo "==> Verificando archivo de entorno .env..."
             if [ ! -f ".env" ]; then
-              if [ -f "env_bitman_laravel" ]; then
-                cp env_bitman_laravel .env
+              if [ -f "../env_bitman_laravel" ]; then
+                cp ../env_bitman_laravel .env
               elif [ -f ".env.example" ]; then
                 cp .env.example .env
                 echo "WARNING: .env generado desde .env.example. Por favor actualiza las credenciales de producción."
