@@ -14,8 +14,6 @@ services:
             - "host.docker.internal:host-gateway"
         volumes:
             - storage_data:/var/www/html/storage/app
-        networks:
-            - bitman-app-php_sail
 
 volumes:
     storage_data:
@@ -24,5 +22,3 @@ volumes:
 networks:
     default:
         name: bitman-network
-    bitman-app-php_sail:
-        external: true
