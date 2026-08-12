@@ -3,7 +3,7 @@ name: Deploy Laravel Application
 on:
   push:
     branches:
-      - trunkr
+      - trunk
   pull_request:
     branches:
       - trunk
