@@ -27,28 +27,42 @@ jobs:
           port: ${{ secrets.PORT }}
           script_stop: true
           script: |
-            echo "==> Accediendo al directorio de despliegue..."
-            DEPLOY_DIR="/home/github/deploy/bitman_vault_php"
-            mkdir -p $DEPLOY_DIR
+            DEPLOY_DIR="/home/github/desploy"
+
+            echo "==> Verificar directorio de despliegue"
+            if [ ! -d  $DEPLOY_DIR ]; then
+              echo "==> Creando directorio de despliegue"
+              mkdir -p $DEPLOY_DIR
+            else
+              echo "==> Directorio de  despliegue ya existe"
+            fi
+
             cd $DEPLOY_DIR
 
-            echo "==> Sincronizando repositorio..."
-            if [ -d ".git" ]; then
+            echo "==> Verificando estado de repositorio"
+            if [ ! -d ${{ github.repository }} ]; then
+              echo "==> Clonando repositorio completo"
+              git clone https://github.com/${{ github.repositorio }}.git .
+            else
+              echo "==> Sincronizando repositorio"
+              cd ${{ github.repository }}
               git fetch origin
               git reset --hard origin/trunk
-            else
-              git clone https://github.com/${{ github.repository }}.git .
+              cd ../
             fi
 
             echo "==> Verificando archivo de entorno .env..."
-            if [ ! -f ".env" ]; then
-              if [ -f "../env_bitman_laravel" ]; then
-                cp ../env_bitman_laravel .env
-              elif [ -f ".env.example" ]; then
-                cp .env.example .env
-                echo "WARNING: .env generado desde .env.example. Por favor actualiza las credenciales de producción."
+            if [ ! -f ${{ github.repository }}"/.env" ]; then
+              if [ -f ${{ github.repository }} ]; then
+                cp ${{ github.repository }} .env
+                echo "==> Archivo de configuraciones ENV copiado"
+              else
+                echo "==> No se enontro un archivo de variables de entorno para configurar el entorno"
+                return 1
               fi
             fi
+
+            cd ${{ github.repository }}
 
             echo "==> Construyendo y desplegando contenedores Docker..."
             docker compose -f docker-compose.prod.yml up --build -d
