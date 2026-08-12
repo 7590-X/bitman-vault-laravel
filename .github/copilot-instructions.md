@@ -1,1 +1,0 @@
-Todos los mensajes de commit generados deben estar redactados en español.

@@ -3,7 +3,7 @@
     Se despliega dentro del panel derecho del dashboard (vista de pantalla completa del panel).
     Utiliza los componentes compartidos estandarizados en <x-share.*>.
 --}}
-<div x-data="crearLoginComponent()" class="h-full flex flex-col max-w-xl min-h-0">
+<div x-data="LoginsFormularioCrearComponent" class="h-full flex flex-col max-w-xl min-h-0">
 
     {{-- ─── Encabezado del Formulario ──────────────────────────────────────── --}}
     <x-share.panel-header
@@ -65,7 +65,7 @@
         <x-share.button
             variante="secondary"
             tipo="button"
-            @click="cancelarCreacion()"
+            @click="cancelar()"
             cargando="enviando">
             Cancelar
         </x-share.button>
@@ -82,7 +82,7 @@
 <script>
     // LoginEvents está importado globalmente en app.js
     document.addEventListener('alpine:init', () => {
-        Alpine.data('crearLoginComponent', () => ({
+        Alpine.data('LoginsFormularioCrearComponent', () => ({
             enviando: false,
             mostrarPassword: false,
             errores: {},
@@ -107,6 +107,7 @@
                 this.errorGeneral = null;
                 this.mostrarPassword = false;
             },
+
             validarLocal() {
                 this.errores = {};
                 if (!this.form.nombre_sitio || !this.form.nombre_sitio.trim()) {
@@ -116,10 +117,6 @@
                     this.errores.contrasena_encriptada = ['La contraseña es obligatoria.'];
                 }
                 return Object.keys(this.errores).length === 0;
-            },
-            cancelarCreacion() {
-                this.resetForm();
-                this.$dispatch(LoginEvents.FORM_CERRADO)
             },
 
             async guardar() {
@@ -148,7 +145,7 @@
                     if (response.ok || response.status === 201) {
                         this.resetForm();
                         window.toastr.success('Login registrado correctamente', 'Nuevo')
-                        this.$dispatch(LoginEvents.CREADO, json.datos);
+                        this.$dispatch('login-creado', json.datos);
                     } else if (response.status === 422) {
                         this.errores = json.errors || {};
                         this.errorGeneral = json.message || 'Corrige los errores del formulario.';

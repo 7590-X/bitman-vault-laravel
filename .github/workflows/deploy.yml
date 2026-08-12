@@ -1,0 +1,67 @@
+name: Deploy Laravel Application
+
+on:
+  push:
+    branches:
+      - trunkr
+  pull_request:
+    branches:
+      - trunk
+
+jobs:
+  cd:
+    name: Continuous Deployment (VPS via SSH)
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/trunk')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code || github.ref == 'refs/heads/trunk'
+        uses: actions/checkout@v4
+
+      - name: Deploy to VPS via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.PORT }}
+          script_stop: true
+          script: |
+            echo "==> Accediendo al directorio de despliegue..."
+            DEPLOY_DIR="/home/github/deploy"
+            mkdir -p $DEPLOY_DIR
+            cd $DEPLOY_DIR
+
+            echo "==> Sincronizando repositorio..."
+            if [ -d ".git" ]; then
+              git fetch origin
+              git reset --hard origin/main || git reset --hard origin/master
+            else
+              git clone https://github.com/${{ github.repository }}.git .
+            fi
+
+            echo "==> Verificando archivo de entorno .env..."
+            if [ ! -f ".env" ]; then
+              if [ -f "env_bitman_laravel" ]; then
+                cp env_bitman_laravel .env
+              elif [ -f ".env.example" ]; then
+                cp .env.example .env
+                echo "WARNING: .env generado desde .env.example. Por favor actualiza las credenciales de producción."
+              fi
+            fi
+
+            echo "==> Construyendo y desplegando contenedores Docker..."
+            docker compose -f docker-compose.prod.yml up --build -d
+
+            echo "==> Ejecutando migraciones de base de datos..."
+            docker compose -f docker-compose.prod.yml exec -T app php artisan migrate --force
+
+            echo "==> Optimizando caché de Laravel..."
+            docker compose -f docker-compose.prod.yml exec -T app php artisan config:cache
+            docker compose -f docker-compose.prod.yml exec -T app php artisan route:cache
+            docker compose -f docker-compose.prod.yml exec -T app php artisan view:cache
+
+            echo "==> Limpiando imágenes de Docker no utilizadas..."
+            docker image prune -f
+
+            echo "==> ¡Despliegue completado exitosamente!"

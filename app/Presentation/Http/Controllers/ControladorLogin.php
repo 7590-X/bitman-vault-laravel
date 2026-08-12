@@ -18,9 +18,10 @@ use App\Domain\Entidades\Login;
 use App\Presentation\Http\Requests\SolicitudActualizarLogin;
 use App\Presentation\Http\Requests\SolicitudCrearLogin;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use RuntimeException;
+use App\Presentation\Http\Responses\ApiResponse;
+use App\Presentation\Http\Responses\HttpCode;
 
 class ControladorLogin extends Controller
 {
@@ -40,7 +41,7 @@ class ControladorLogin extends Controller
         $usuarioId = (int) auth('api')->id();
         $logins = $this->manejadorObtener->manejar($usuarioId);
 
-        $datos = array_map(fn (Login $login) => $this->transformarRespuesta($login), $logins);
+        $datos = array_map(fn(Login $login) => $this->transformarRespuesta($login), $logins);
 
         return response()->json([
             'datos' => $datos,
@@ -56,20 +57,17 @@ class ControladorLogin extends Controller
         $usuarioId = (int) auth('api')->id();
 
         $comando = new ComandoCrearLogin(
-            usuarioId:            $usuarioId,
-            nombreSitio:          $solicitud->validated('nombre_sitio'),
-            url:                  $solicitud->validated('url'),
-            usuarioLogin:         $solicitud->validated('usuario_login'),
+            usuarioId: $usuarioId,
+            nombreSitio: $solicitud->validated('nombre_sitio'),
+            url: $solicitud->validated('url'),
+            usuarioLogin: $solicitud->validated('usuario_login'),
             contrasenaEncriptada: $solicitud->validated('contrasena_encriptada'),
-            notas:                $solicitud->validated('notas'),
+            notas: $solicitud->validated('notas'),
         );
 
         $login = $this->manejadorCrear->manejar($comando);
 
-        return response()->json([
-            'mensaje' => 'Login registrado exitosamente.',
-            'datos'   => $this->transformarRespuesta($login),
-        ], Response::HTTP_CREATED);
+        return ApiResponse::exito('Login registrado exitosamente.', $this->transformarRespuesta($login), HttpCode::CREATED);
     }
 
     /**
@@ -81,26 +79,24 @@ class ControladorLogin extends Controller
         $usuarioId = (int) auth('api')->id();
 
         $comando = new ComandoActualizarLogin(
-            id:                   $id,
-            usuarioId:            $usuarioId,
-            nombreSitio:          $solicitud->validated('nombre_sitio'),
-            url:                  $solicitud->validated('url'),
-            usuarioLogin:         $solicitud->validated('usuario_login'),
+            id: $id,
+            usuarioId: $usuarioId,
+            nombreSitio: $solicitud->validated('nombre_sitio'),
+            url: $solicitud->validated('url'),
+            usuarioLogin: $solicitud->validated('usuario_login'),
             contrasenaEncriptada: $solicitud->validated('contrasena_encriptada'),
-            notas:                $solicitud->validated('notas'),
+            notas: $solicitud->validated('notas'),
         );
 
         try {
             $login = $this->manejadorActualizar->manejar($comando);
         } catch (RuntimeException $ex) {
-            $codigo = $ex->getCode() >= 400 && $ex->getCode() < 600 ? $ex->getCode() : Response::HTTP_BAD_REQUEST;
-            return response()->json(['mensaje' => $ex->getMessage()], $codigo);
+            $codigoNum = $ex->getCode() >= 400 && $ex->getCode() < 600 ? $ex->getCode() : 400;
+            $codigoEnum = HttpCode::tryFrom($codigoNum) ?? HttpCode::BAD_REQUEST;
+            return ApiResponse::error($ex->getMessage(), $codigoEnum);
         }
 
-        return response()->json([
-            'mensaje' => 'Login actualizado exitosamente.',
-            'datos'   => $this->transformarRespuesta($login),
-        ]);
+        return ApiResponse::exito('Login actualizado exitosamente.', $this->transformarRespuesta($login));
     }
 
     /**
@@ -112,20 +108,19 @@ class ControladorLogin extends Controller
         $usuarioId = (int) auth('api')->id();
 
         $comando = new ComandoEliminarLogin(
-            id:        $id,
+            id: $id,
             usuarioId: $usuarioId,
         );
 
         try {
             $this->manejadorEliminar->manejar($comando);
         } catch (RuntimeException $ex) {
-            $codigo = $ex->getCode() >= 400 && $ex->getCode() < 600 ? $ex->getCode() : Response::HTTP_BAD_REQUEST;
-            return response()->json(['mensaje' => $ex->getMessage()], $codigo);
+            $codigoNum = $ex->getCode() >= 400 && $ex->getCode() < 600 ? $ex->getCode() : 400;
+            $codigoEnum = HttpCode::tryFrom($codigoNum) ?? HttpCode::BAD_REQUEST;
+            return ApiResponse::error($ex->getMessage(), $codigoEnum);
         }
 
-        return response()->json([
-            'mensaje' => 'Login eliminado exitosamente.',
-        ]);
+        return ApiResponse::exito('Login eliminado exitosamente.');
     }
 
     /**

@@ -34,6 +34,41 @@ class AppServiceProvider extends ServiceProvider
             \App\Domain\Puertos\RepositorioLogin::class,
             \App\Infrastructure\Repositorios\RepositorioLoginEloquent::class
         );
+
+        $this->app->bind(
+            \App\Domain\Puertos\RepositorioTarjeta::class,
+            \App\Infrastructure\Repositorios\RepositorioTarjetaEloquent::class
+        );
+
+        $this->app->bind(
+            \App\Domain\Puertos\RepositorioTipoTarjeta::class,
+            \App\Infrastructure\Repositorios\RepositorioTipoTarjetaEloquent::class
+        );
+
+        $this->app->bind(
+            \App\Domain\Puertos\RepositorioLlaveSsh::class,
+            \App\Infrastructure\Repositorios\RepositorioLlaveSshEloquent::class
+        );
+
+        $this->app->bind(
+            \App\Domain\Puertos\RepositorioMfa::class,
+            \App\Infrastructure\Repositorios\RepositorioMfaEloquent::class
+        );
+
+        $this->app->bind(
+            \App\Domain\Puertos\ServicioNotificacionMfa::class,
+            \App\Infrastructure\Servicios\ServicioNotificacionMfaLog::class
+        );
+
+        $this->app->bind(
+            \App\Domain\Puertos\RepositorioEnvioNotaSegura::class,
+            \App\Infrastructure\Repositorios\RepositorioEnvioNotaSeguraEloquent::class
+        );
+
+        $this->app->bind(
+            \App\Domain\Puertos\ServicioNotificacionCorreoNota::class,
+            \App\Infrastructure\Servicios\ServicioNotificacionCorreoNotaLog::class
+        );
     }
 
     /**

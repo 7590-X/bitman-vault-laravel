@@ -34,5 +34,22 @@ Route::middleware('jwt.auth')->group(function () {
             ->name('api.auth.me');
     });
 
+    Route::prefix('catalogos')->group(function () {
+        Route::get('tipos-tarjeta',           [\App\Presentation\Http\Controllers\ControladorCatalogo::class, 'obtenerTiposTarjeta']);
+    });
+
+    Route::prefix('mfa')->group(function () {
+        Route::get('estado',     [\App\Presentation\Http\Controllers\ControladorMfa::class, 'estado'])->name('api.mfa.estado');
+        Route::post('registrar', [\App\Presentation\Http\Controllers\ControladorMfa::class, 'registrar'])->name('api.mfa.registrar');
+        Route::post('confirmar', [\App\Presentation\Http\Controllers\ControladorMfa::class, 'confirmar'])->name('api.mfa.confirmar');
+        Route::post('desactivar', [\App\Presentation\Http\Controllers\ControladorMfa::class, 'desactivar'])->name('api.mfa.desactivar');
+    });
+
     Route::apiResource('logins', ControladorLogin::class)->except(['show']);
+    Route::apiResource('tarjetas', App\Presentation\Http\Controllers\ControladorTarjeta::class)->except(['show']);
+    Route::apiResource('llaves-ssh', App\Presentation\Http\Controllers\ControladorLlaveSsh::class)->except(['show', 'update']);
+    Route::apiResource('enviar-notas', App\Presentation\Http\Controllers\ControladorEnvioNotaSegura::class)->except(['show', 'update']);
 });
+
+// Ruta de apertura de nota (con token y código de verificación)
+Route::post('enviar-notas/aperturar/{token}', [App\Presentation\Http\Controllers\ControladorEnvioNotaSegura::class, 'aperturar']);

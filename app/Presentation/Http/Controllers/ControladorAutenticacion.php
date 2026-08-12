@@ -17,11 +17,12 @@ use App\Application\Comandos\ManejadorIniciarSesion;
 use App\Domain\Puertos\AutenticacionRepositorio;
 use App\Infrastructure\Modelos\UsuarioModelo;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 use RuntimeException;
 use App\Presentation\Http\Requests\SolicitudIniciarSesion;
+use App\Presentation\Http\Responses\ApiResponse;
+use App\Presentation\Http\Responses\HttpCode;
 
 class ControladorAutenticacion extends Controller
 {
@@ -42,15 +43,13 @@ class ControladorAutenticacion extends Controller
     {
         $comando = new ComandoIniciarSesion(
             correoElectronico: $solicitud->validated('correo_electronico'),
-            contrasena:        $solicitud->validated('contrasena'),
+            contrasena: $solicitud->validated('contrasena'),
         );
 
         try {
             $token = $this->manejador->manejar($comando);
         } catch (RuntimeException $excepcion) {
-            return response()->json([
-                'mensaje' => $excepcion->getMessage(),
-            ], Response::HTTP_UNAUTHORIZED);
+            return ApiResponse::error($excepcion->getMessage(), HttpCode::UNAUTHORIZED);
         }
 
         return $this->respuestaToken($token);
@@ -65,9 +64,7 @@ class ControladorAutenticacion extends Controller
     {
         $this->autenticacion->cerrarSesion();
 
-        return response()->json([
-            'mensaje' => 'Sesión cerrada correctamente.',
-        ]);
+        return ApiResponse::exito('Sesión cerrada correctamente.');
     }
 
     /**
@@ -80,9 +77,7 @@ class ControladorAutenticacion extends Controller
         try {
             $nuevoToken = $this->autenticacion->refrescarToken();
         } catch (RuntimeException) {
-            return response()->json([
-                'mensaje' => 'No se pudo renovar el token.',
-            ], Response::HTTP_UNAUTHORIZED);
+            return ApiResponse::error('No se pudo renovar el token.', HttpCode::UNAUTHORIZED);
         }
 
         return $this->respuestaToken($nuevoToken);
